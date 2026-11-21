@@ -22,7 +22,6 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        # ── تحديث إصدار Flutter ليتوافق مع الحزمة ──
         flutter-version: '3.41.0'
         channel: 'stable'
 
@@ -38,15 +37,10 @@ jobs:
         MANIFEST="temp_app/android/app/src/main/AndroidManifest.xml"
         sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"\/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"\/>\n    <application/' $MANIFEST
 
-    - name: Fix Gradle Version
+    # ── فقط قم بتعديل minSdkVersion، ولا تلمس settings.gradle ──
+    - name: Fix minSdkVersion
       run: |
-        sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-8.4-all.zip|' temp_app/android/gradle/wrapper/gradle-wrapper.properties
-
-    - name: Fix AGP & Kotlin Versions
-      run: |
-        sed -i 's|id "com.android.application" version .*|id "com.android.application" version "8.3.0" apply false|' temp_app/android/settings.gradle
-        sed -i 's|id "org.jetbrains.kotlin.android" version .*|id "org.jetbrains.kotlin.android" version "2.0.0" apply false|' temp_app/android/settings.gradle
-        sed -i 's|minSdkVersion .*|minSdkVersion 20|' temp_app/android/app/build.gradle
+        sed -i 's/minSdkVersion .*/minSdkVersion 20/' temp_app/android/app/build.gradle
 
     - name: Install dependencies
       run: flutter pub get
