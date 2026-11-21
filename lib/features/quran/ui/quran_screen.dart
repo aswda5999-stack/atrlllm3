@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/islamic_pattern_background.dart';
+import 'surah_screen.dart';
 
-/// صفحة القرآن الكريم — قائمة السور
+/// صفحة القرآن الكريم — فهرس السور الـ 114 بخط الثلث
 class QuranScreen extends StatefulWidget {
   const QuranScreen({super.key});
 
@@ -15,7 +16,7 @@ class _QuranScreenState extends State<QuranScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  // ── بيانات السور الـ 114 (مبسطة) ──────────────────
+  // ── بيانات السور الـ 114 كاملة ──────────────────
   static const List<Map<String, dynamic>> _surahs = [
     {'id': 1, 'name': 'الفاتحة', 'verses': 7, 'type': 'مكية'},
     {'id': 2, 'name': 'البقرة', 'verses': 286, 'type': 'مدنية'},
@@ -37,7 +38,100 @@ class _QuranScreenState extends State<QuranScreen> {
     {'id': 18, 'name': 'الكهف', 'verses': 110, 'type': 'مكية'},
     {'id': 19, 'name': 'مريم', 'verses': 98, 'type': 'مكية'},
     {'id': 20, 'name': 'طه', 'verses': 135, 'type': 'مكية'},
-    // ... يمكن إكمال بقية السور بنفس الطريقة (حتى 114)
+    {'id': 21, 'name': 'الأنبياء', 'verses': 112, 'type': 'مكية'},
+    {'id': 22, 'name': 'الحج', 'verses': 78, 'type': 'مدنية'},
+    {'id': 23, 'name': 'المؤمنون', 'verses': 118, 'type': 'مكية'},
+    {'id': 24, 'name': 'النور', 'verses': 64, 'type': 'مدنية'},
+    {'id': 25, 'name': 'الفرقان', 'verses': 77, 'type': 'مكية'},
+    {'id': 26, 'name': 'الشعراء', 'verses': 227, 'type': 'مكية'},
+    {'id': 27, 'name': 'النمل', 'verses': 93, 'type': 'مكية'},
+    {'id': 28, 'name': 'القصص', 'verses': 88, 'type': 'مكية'},
+    {'id': 29, 'name': 'العنكبوت', 'verses': 69, 'type': 'مكية'},
+    {'id': 30, 'name': 'الروم', 'verses': 60, 'type': 'مكية'},
+    {'id': 31, 'name': 'لقمان', 'verses': 34, 'type': 'مكية'},
+    {'id': 32, 'name': 'السجدة', 'verses': 30, 'type': 'مكية'},
+    {'id': 33, 'name': 'الأحزاب', 'verses': 73, 'type': 'مدنية'},
+    {'id': 34, 'name': 'سبأ', 'verses': 54, 'type': 'مكية'},
+    {'id': 35, 'name': 'فاطر', 'verses': 45, 'type': 'مكية'},
+    {'id': 36, 'name': 'يس', 'verses': 83, 'type': 'مكية'},
+    {'id': 37, 'name': 'الصافات', 'verses': 182, 'type': 'مكية'},
+    {'id': 38, 'name': 'ص', 'verses': 88, 'type': 'مكية'},
+    {'id': 39, 'name': 'الزمر', 'verses': 75, 'type': 'مكية'},
+    {'id': 40, 'name': 'غافر', 'verses': 85, 'type': 'مكية'},
+    {'id': 41, 'name': 'فصلت', 'verses': 54, 'type': 'مكية'},
+    {'id': 42, 'name': 'الشورى', 'verses': 53, 'type': 'مكية'},
+    {'id': 43, 'name': 'الزخرف', 'verses': 89, 'type': 'مكية'},
+    {'id': 44, 'name': 'الدخان', 'verses': 59, 'type': 'مكية'},
+    {'id': 45, 'name': 'الجاثية', 'verses': 37, 'type': 'مكية'},
+    {'id': 46, 'name': 'الأحقاف', 'verses': 35, 'type': 'مكية'},
+    {'id': 47, 'name': 'محمد', 'verses': 38, 'type': 'مدنية'},
+    {'id': 48, 'name': 'الفتح', 'verses': 29, 'type': 'مدنية'},
+    {'id': 49, 'name': 'الحجرات', 'verses': 18, 'type': 'مدنية'},
+    {'id': 50, 'name': 'ق', 'verses': 45, 'type': 'مكية'},
+    {'id': 51, 'name': 'الذاريات', 'verses': 60, 'type': 'مكية'},
+    {'id': 52, 'name': 'الطور', 'verses': 49, 'type': 'مكية'},
+    {'id': 53, 'name': 'النجم', 'verses': 62, 'type': 'مكية'},
+    {'id': 54, 'name': 'القمر', 'verses': 55, 'type': 'مكية'},
+    {'id': 55, 'name': 'الرحمن', 'verses': 78, 'type': 'مدنية'},
+    {'id': 56, 'name': 'الواقعة', 'verses': 96, 'type': 'مكية'},
+    {'id': 57, 'name': 'الحديد', 'verses': 29, 'type': 'مدنية'},
+    {'id': 58, 'name': 'المجادلة', 'verses': 22, 'type': 'مدنية'},
+    {'id': 59, 'name': 'الحشر', 'verses': 24, 'type': 'مدنية'},
+    {'id': 60, 'name': 'الممتحنة', 'verses': 13, 'type': 'مدنية'},
+    {'id': 61, 'name': 'الصف', 'verses': 14, 'type': 'مدنية'},
+    {'id': 62, 'name': 'الجمعة', 'verses': 11, 'type': 'مدنية'},
+    {'id': 63, 'name': 'المنافقون', 'verses': 11, 'type': 'مدنية'},
+    {'id': 64, 'name': 'التغابن', 'verses': 18, 'type': 'مدنية'},
+    {'id': 65, 'name': 'الطلاق', 'verses': 12, 'type': 'مدنية'},
+    {'id': 66, 'name': 'التحريم', 'verses': 12, 'type': 'مدنية'},
+    {'id': 67, 'name': 'الملك', 'verses': 30, 'type': 'مكية'},
+    {'id': 68, 'name': 'القلم', 'verses': 52, 'type': 'مكية'},
+    {'id': 69, 'name': 'الحاقة', 'verses': 52, 'type': 'مكية'},
+    {'id': 70, 'name': 'المعارج', 'verses': 44, 'type': 'مكية'},
+    {'id': 71, 'name': 'نوح', 'verses': 28, 'type': 'مكية'},
+    {'id': 72, 'name': 'الجن', 'verses': 28, 'type': 'مكية'},
+    {'id': 73, 'name': 'المزمل', 'verses': 20, 'type': 'مكية'},
+    {'id': 74, 'name': 'المدثر', 'verses': 56, 'type': 'مكية'},
+    {'id': 75, 'name': 'القيامة', 'verses': 40, 'type': 'مكية'},
+    {'id': 76, 'name': 'الإنسان', 'verses': 31, 'type': 'مدنية'},
+    {'id': 77, 'name': 'المرسلات', 'verses': 50, 'type': 'مكية'},
+    {'id': 78, 'name': 'النبأ', 'verses': 40, 'type': 'مكية'},
+    {'id': 79, 'name': 'النازعات', 'verses': 46, 'type': 'مكية'},
+    {'id': 80, 'name': 'عبس', 'verses': 42, 'type': 'مكية'},
+    {'id': 81, 'name': 'التكوير', 'verses': 29, 'type': 'مكية'},
+    {'id': 82, 'name': 'الانفطار', 'verses': 19, 'type': 'مكية'},
+    {'id': 83, 'name': 'المطففين', 'verses': 36, 'type': 'مكية'},
+    {'id': 84, 'name': 'الانشقاق', 'verses': 25, 'type': 'مكية'},
+    {'id': 85, 'name': 'البروج', 'verses': 22, 'type': 'مكية'},
+    {'id': 86, 'name': 'الطارق', 'verses': 17, 'type': 'مكية'},
+    {'id': 87, 'name': 'الأعلى', 'verses': 19, 'type': 'مكية'},
+    {'id': 88, 'name': 'الغاشية', 'verses': 26, 'type': 'مكية'},
+    {'id': 89, 'name': 'الفجر', 'verses': 30, 'type': 'مكية'},
+    {'id': 90, 'name': 'البلد', 'verses': 20, 'type': 'مكية'},
+    {'id': 91, 'name': 'الشمس', 'verses': 15, 'type': 'مكية'},
+    {'id': 92, 'name': 'الليل', 'verses': 21, 'type': 'مكية'},
+    {'id': 93, 'name': 'الضحى', 'verses': 11, 'type': 'مكية'},
+    {'id': 94, 'name': 'الشرح', 'verses': 8, 'type': 'مكية'},
+    {'id': 95, 'name': 'التين', 'verses': 8, 'type': 'مكية'},
+    {'id': 96, 'name': 'العلق', 'verses': 19, 'type': 'مكية'},
+    {'id': 97, 'name': 'القدر', 'verses': 5, 'type': 'مكية'},
+    {'id': 98, 'name': 'البينة', 'verses': 8, 'type': 'مدنية'},
+    {'id': 99, 'name': 'الزلزلة', 'verses': 8, 'type': 'مدنية'},
+    {'id': 100, 'name': 'العاديات', 'verses': 11, 'type': 'مكية'},
+    {'id': 101, 'name': 'القارعة', 'verses': 11, 'type': 'مكية'},
+    {'id': 102, 'name': 'التكاثر', 'verses': 8, 'type': 'مكية'},
+    {'id': 103, 'name': 'العصر', 'verses': 3, 'type': 'مكية'},
+    {'id': 104, 'name': 'الهمزة', 'verses': 9, 'type': 'مكية'},
+    {'id': 105, 'name': 'الفيل', 'verses': 5, 'type': 'مكية'},
+    {'id': 106, 'name': 'قريش', 'verses': 4, 'type': 'مكية'},
+    {'id': 107, 'name': 'الماعون', 'verses': 7, 'type': 'مكية'},
+    {'id': 108, 'name': 'الكوثر', 'verses': 3, 'type': 'مكية'},
+    {'id': 109, 'name': 'الكافرون', 'verses': 6, 'type': 'مكية'},
+    {'id': 110, 'name': 'النصر', 'verses': 3, 'type': 'مدنية'},
+    {'id': 111, 'name': 'المسد', 'verses': 5, 'type': 'مكية'},
+    {'id': 112, 'name': 'الإخلاص', 'verses': 4, 'type': 'مكية'},
+    {'id': 113, 'name': 'الفلق', 'verses': 5, 'type': 'مكية'},
+    {'id': 114, 'name': 'الناس', 'verses': 6, 'type': 'مكية'},
   ];
 
   List<Map<String, dynamic>> get _filteredSurahs {
@@ -140,7 +234,16 @@ class _SurahCardState extends State<_SurahCard> {
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
       onTap: () {
-        // TODO: الانتقال إلى صفحة السورة
+        // الانتقال إلى صفحة السورة
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SurahScreen(
+              surahId: widget.surah['id'],
+              surahName: widget.surah['name'],
+            ),
+          ),
+        );
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
@@ -185,9 +288,16 @@ class _SurahCardState extends State<_SurahCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // استخدام خط الثلث لأسماء السور
                   Text(
                     widget.surah['name'],
-                    style: AppTextStyles.title.copyWith(fontSize: 16),
+                    style: const TextStyle(
+                      fontFamily: 'Thuluth', // اسم الخط الذي أضفته في pubspec.yaml
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                      height: 1.2,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Row(
