@@ -31,10 +31,15 @@ jobs:
         cp -r lib temp_app/
         cp pubspec.yaml temp_app/
 
-    # ── الخطوة الجديدة: تعديل إصدار SDK الأدنى ──
+    # ── إصلاح إصدار SDK ──
     - name: Fix minSdkVersion
       run: |
         sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 20/' temp_app/android/app/build.gradle
+
+    # ── الخطوة الجديدة: ترقية إصدار Kotlin ──
+    - name: Fix Kotlin Version
+      run: |
+        sed -i "s/ext.kotlin_version = '1.9.0'/ext.kotlin_version = '1.9.20'/" temp_app/android/build.gradle
 
     - name: Install dependencies
       run: flutter pub get
