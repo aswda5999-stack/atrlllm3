@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/islamic_pattern_background.dart';
 import '../../shared/widgets/app_bottom_nav.dart';
+import '../audio/ui/audio_screen.dart';
+import '../quran/ui/quran_screen.dart';
+import '../adhkar/ui/adhkar_screen.dart';
+import '../follow_us/ui/follow_us_screen.dart';
 import 'widgets/banner_carousel.dart';
 import 'widgets/continue_reading_card.dart';
 import 'widgets/grid_menu.dart';
 import 'widgets/top_search_bar.dart';
 
 /// الشاشة الرئيسية لتطبيق "أثر مسلم"
-/// تحتوي على شريط تنقل سفلي + 5 صفحات (PageView)
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -25,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  /// التنقل عند الضغط على شريط التنقل
   void _onNavTap(int index) {
     setState(() => _currentIndex = index);
     _pageController.animateToPage(
@@ -35,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// التنقل عند السحب (PageView)
   void _onPageChanged(int index) {
     setState(() => _currentIndex = index);
   }
@@ -49,10 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: const BouncingScrollPhysics(),
         children: const [
           _HomeTab(),
-          _PlaceholderTab(title: 'الصوتيات', icon: Icons.headphones_rounded),
-          _PlaceholderTab(title: 'القرآن الكريم', icon: Icons.menu_book_rounded),
-          _PlaceholderTab(title: 'الأذكار', icon: Icons.nights_stay_rounded),
-          _PlaceholderTab(title: 'تابعنا', icon: Icons.favorite_rounded),
+          AudioScreen(),      // تبويب الصوتيات
+          QuranScreen(),      // تبويب القرآن
+          AdhkarScreen(),     // تبويب الأذكار
+          FollowUsScreen(),   // تبويب تابعنا
         ],
       ),
       bottomNavigationBar: AppBottomNav(
@@ -87,47 +88,6 @@ class _HomeTab extends StatelessWidget {
               ContinueReadingCard(),
               SizedBox(height: 22),
               GridMenu(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ══════════════════════════════════════════════════════
-//  صفحة مؤقتة للتبويبات الأخرى (سيتم بناؤها لاحقاً)
-// ══════════════════════════════════════════════════════
-
-class _PlaceholderTab extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _PlaceholderTab({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return IslamicPatternBackground(
-      child: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 80, color: Colors.grey.shade400),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'قيد التطوير...',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
             ],
           ),
         ),
