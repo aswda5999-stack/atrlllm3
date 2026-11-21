@@ -31,15 +31,15 @@ jobs:
         cp -r lib temp_app/
         cp pubspec.yaml temp_app/
 
-    # ── إصلاح إصدار SDK ──
-    - name: Fix minSdkVersion
+    # ── الحل النهائي: توحيد استبدال جميع إعدادات إصدار Kotlin ──
+    - name: Fix Kotlin & AGP Versions
       run: |
-        sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 20/' temp_app/android/app/build.gradle
-
-    # ── الخطوة الجديدة: ترقية إصدار Kotlin ──
-    - name: Fix Kotlin Version
-      run: |
-        sed -i "s/ext.kotlin_version = '1.9.0'/ext.kotlin_version = '1.9.20'/" temp_app/android/build.gradle
+        # 1. استبدال الإصدار الافتراضي في build.gradle
+        sed -i "s/ext.kotlin_version = '1.9.0'/ext.kotlin_version = '2.0.20'/" temp_app/android/build.gradle
+        # 2. استبدال إعدادات Kotlin في settings.gradle (Flutter 3.16+ يستخدم هذا الملف بشكل أساسي)
+        sed -i "s/id 'org.jetbrains.kotlin.android' version '[^']*'/id 'org.jetbrains.kotlin.android' version '2.0.20'/" temp_app/android/settings.gradle
+        # 3. استبدال إصدار AGP ليتوافق مع Kotlin 2.0.20
+        sed -i "s/id 'com.android.application' version '[^']*'/id 'com.android.application' version '8.1.1'/" temp_app/android/settings.gradle
 
     - name: Install dependencies
       run: flutter pub get
