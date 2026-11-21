@@ -31,20 +31,21 @@ jobs:
         cp -r lib temp_app/
         cp pubspec.yaml temp_app/
 
-    # ── الإصلاح النهائي: تجاوز الاستبدال النصي، والكتابة المباشرة في الملفات ──
-    - name: Force Fix Kotlin & AGP Versions
+    # ── تعديل إصدار Gradle Wrapper ──
+    - name: Fix Gradle Version
       run: |
-        # 1. فرض إصدار Kotlin في build.gradle إلى 2.0.0
-        sed -i "s/ext.kotlin_version = .*/ext.kotlin_version = '2.0.0'/" temp_app/android/build.gradle
-        
-        # 2. فرض إصدار Kotlin و AGP في settings.gradle
-        sed -i "s/id \"org.jetbrains.kotlin.android\" version .*/id \"org.jetbrains.kotlin.android\" version \"2.0.0\" apply false/" temp_app/android/settings.gradle
-        sed -i "s/id \"com.android.application\" version .*/id \"com.android.application\" version \"8.3.0\" apply false/" temp_app/android/settings.gradle
+        sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-8.4-all.zip|' temp_app/android/gradle/wrapper/gradle-wrapper.properties
 
-    # ── إصلاح minSdkVersion (يجب أن يبقى) ──
-    - name: Force Fix minSdkVersion to 20
+    # ── تعديل إصدار AGP و Kotlin ──
+    - name: Fix AGP & Kotlin Versions
       run: |
-        sed -i 's/minSdkVersion .*/minSdkVersion 20/' temp_app/android/app/build.gradle
+        sed -i 's|id "com.android.application" version .*|id "com.android.application" version "8.3.0" apply false|' temp_app/android/settings.gradle
+        sed -i 's|id "org.jetbrains.kotlin.android" version .*|id "org.jetbrains.kotlin.android" version "2.0.0" apply false|' temp_app/android/settings.gradle
+
+    # ── تعديل minSdkVersion ──
+    - name: Fix minSdkVersion
+      run: |
+        sed -i 's|minSdkVersion .*|minSdkVersion 20|' temp_app/android/app/build.gradle
 
     - name: Install dependencies
       run: flutter pub get
