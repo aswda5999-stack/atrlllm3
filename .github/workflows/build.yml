@@ -37,10 +37,10 @@ jobs:
         MANIFEST="temp_app/android/app/src/main/AndroidManifest.xml"
         sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"\/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"\/>\n    <application/' $MANIFEST
 
-    # ── فقط قم بتعديل minSdkVersion، ولا تلمس settings.gradle ──
-    - name: Fix minSdkVersion
+    # ── تعديل ملف .kts وليس .gradle ──
+    - name: Fix minSdkVersion in build.gradle.kts
       run: |
-        sed -i 's/minSdkVersion .*/minSdkVersion 20/' temp_app/android/app/build.gradle
+        sed -i 's/minSdk = .*/minSdk = 20/' temp_app/android/app/build.gradle.kts
 
     - name: Install dependencies
       run: flutter pub get
