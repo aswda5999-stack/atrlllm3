@@ -12,12 +12,18 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  just_audio: ^0.9.36
-  geolocator: ^11.0.0
-  adhan: ^2.0.0
-  flutter_compass: ^0.8.0
-  file_picker: ^8.0.0+1
-  shared_preferences: ^2.2.2
+
+  # ── حزم قسم القرآن ──────────────────────────────
+  qcf_quran_plus: ^0.1.1     # لعرض المصحف الموثوق والتلوين
+  just_audio: ^0.9.36        # لتشغيل التلاوة الصوتية
+  
+  # ── حزم الميزات الأخرى ──────────────────────────
+  share_plus: ^7.2.1         # لميزة المشاركة
+  shared_preferences: ^2.2.2 # لحفظ المفضلة وآخر قراءة
+  geolocator: ^11.0.0        # لتحديد الموقع (مواقيت الصلاة والقبلة)
+  adhan: ^2.0.0              # لحساب مواقيت الصلاة
+  flutter_compass: ^0.8.0    # للبوصلة
+  file_picker: ^8.0.0+1      # لاختيار ملفات الأذان المخصصة
 
 dev_dependencies:
   flutter_test:
@@ -32,7 +38,7 @@ flutter:
     - family: Thuluth
       fonts:
         - asset: assets/fonts/Thuluth.ttf
-    # (اختياري) إذا كان لديك خط Cairo مرفوعاً، أزل علامة # من السطور التالية
+    # (اختياري) إذا كان لديك خط Cairo مرفوعاً للواجهة، أزل علامة # من السطور التالية:
     # - family: Cairo
     #   fonts:
     #     - asset: assets/fonts/Cairo-Regular.ttf
