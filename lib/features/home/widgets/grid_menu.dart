@@ -2,19 +2,61 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 
+// ── استيراد الشاشات ──────────────────────────────────
+import '../../quran/ui/quran_screen.dart';
+import '../../audio/ui/audio_screen.dart';
+import '../../adhkar/ui/adhkar_screen.dart';
+import '../../prayer/ui/prayer_screen.dart';
+import '../../hadiths/ui/hadiths_screen.dart';
+import '../../duas/ui/duas_screen.dart';
+import '../../qibla/ui/qibla_screen.dart';
+import '../../tasbih/ui/tasbih_screen.dart';
+
 /// شبكة الأزرار الرئيسية (8 أزرار)
 class GridMenu extends StatelessWidget {
   const GridMenu({super.key});
 
-  static const List<_MenuItem> _items = [
-    _MenuItem(icon: Icons.menu_book_rounded, label: 'القرآن الكريم'),
-    _MenuItem(icon: Icons.headphones_rounded, label: 'الصوتيات'),
-    _MenuItem(icon: Icons.nights_stay_rounded, label: 'الأذكار'),
-    _MenuItem(icon: Icons.mosque_rounded, label: 'الصلاة'),
-    _MenuItem(icon: Icons.article_rounded, label: 'الأحاديث'),
-    _MenuItem(icon: Icons.pan_tool_rounded, label: 'الدعاء'),
-    _MenuItem(icon: Icons.explore_rounded, label: 'البوصلة'),
-    _MenuItem(icon: Icons.circle_outlined, label: 'المسبحة'),
+  static final List<Map<String, dynamic>> _items = [
+    {
+      'icon': Icons.menu_book_rounded,
+      'label': 'القرآن الكريم',
+      'screen': const QuranScreen(),
+    },
+    {
+      'icon': Icons.headphones_rounded,
+      'label': 'الصوتيات',
+      'screen': const AudioScreen(),
+    },
+    {
+      'icon': Icons.nights_stay_rounded,
+      'label': 'الأذكار',
+      'screen': const AdhkarScreen(),
+    },
+    {
+      'icon': Icons.mosque_rounded,
+      'label': 'الصلاة',
+      'screen': const PrayerScreen(),
+    },
+    {
+      'icon': Icons.article_rounded,
+      'label': 'الأحاديث',
+      'screen': const HadithsScreen(),
+    },
+    {
+      'icon': Icons.pan_tool_rounded,
+      'label': 'الدعاء',
+      'screen': const DuasScreen(),
+    },
+    {
+      'icon': Icons.explore_rounded,
+      'label': 'البوصلة',
+      'screen': const QiblaScreen(),
+    },
+    {
+      'icon': Icons.circle_outlined,
+      'label': 'المسبحة',
+      'screen': const TasbihScreen(),
+    },
   ];
 
   @override
@@ -30,21 +72,14 @@ class GridMenu extends StatelessWidget {
       ),
       itemCount: _items.length,
       itemBuilder: (context, index) {
-        return _AnimatedMenuButton(item: _items[index]);
+        return _AnimatedMenuButton(
+          icon: _items[index]['icon'] as IconData,
+          label: _items[index]['label'] as String,
+          screen: _items[index]['screen'] as Widget,
+        );
       },
     );
   }
-}
-
-// ══════════════════════════════════════════════════════
-//  نموذج بيانات عنصر القائمة
-// ══════════════════════════════════════════════════════
-
-class _MenuItem {
-  final IconData icon;
-  final String label;
-
-  const _MenuItem({required this.icon, required this.label});
 }
 
 // ══════════════════════════════════════════════════════
@@ -52,9 +87,15 @@ class _MenuItem {
 // ══════════════════════════════════════════════════════
 
 class _AnimatedMenuButton extends StatefulWidget {
-  final _MenuItem item;
+  final IconData icon;
+  final String label;
+  final Widget screen;
 
-  const _AnimatedMenuButton({required this.item});
+  const _AnimatedMenuButton({
+    required this.icon,
+    required this.label,
+    required this.screen,
+  });
 
   @override
   State<_AnimatedMenuButton> createState() => _AnimatedMenuButtonState();
@@ -70,7 +111,11 @@ class _AnimatedMenuButtonState extends State<_AnimatedMenuButton> {
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
       onTap: () {
-        // TODO: التنقل إلى الشاشة المقابلة
+        // ── الانتقال إلى الشاشة المطلوبة ──────────────
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => widget.screen),
+        );
       },
       child: AnimatedScale(
         scale: _pressed ? 0.92 : 1.0,
@@ -100,7 +145,6 @@ class _AnimatedMenuButtonState extends State<_AnimatedMenuButton> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ── الأيقونة ────────────────────────
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.all(10),
@@ -111,16 +155,14 @@ class _AnimatedMenuButtonState extends State<_AnimatedMenuButton> {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
-                  widget.item.icon,
+                  widget.icon,
                   size: 24,
                   color: _pressed ? Colors.white : AppColors.skyDark,
                 ),
               ),
               const SizedBox(height: 8),
-
-              // ── التسمية ─────────────────────────
               Text(
-                widget.item.label,
+                widget.label,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.caption.copyWith(
                   fontSize: 11,
