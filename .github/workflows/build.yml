@@ -22,7 +22,8 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.19.0'
+        # ── تحديث إصدار Flutter ليتوافق مع الحزمة ──
+        flutter-version: '3.41.0'
         channel: 'stable'
 
     - name: Setup Flutter Project Scaffolding
@@ -30,17 +31,13 @@ jobs:
         flutter create temp_app
         cp -r lib temp_app/
         cp pubspec.yaml temp_app/
-        # نسخ مجلد الأصول إن وجد
         if [ -d "assets" ]; then cp -r assets temp_app/; fi
 
-    # ── إضافة صلاحيات الإنترنت والموقع في AndroidManifest ──
     - name: Add Permissions to AndroidManifest
       run: |
         MANIFEST="temp_app/android/app/src/main/AndroidManifest.xml"
-        # إضافة صلاحية الإنترنت قبل وسم <application>
         sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"\/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"\/>\n    <application/' $MANIFEST
 
-    # ── إصلاحات Gradle و Kotlin و minSdk ──
     - name: Fix Gradle Version
       run: |
         sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-8.4-all.zip|' temp_app/android/gradle/wrapper/gradle-wrapper.properties
