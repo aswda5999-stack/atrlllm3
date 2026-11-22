@@ -1,177 +1,123 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:qcf_quran_plus/qcf_quran_plus.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_compass/flutter_compass.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/islamic_pattern_background.dart';
 
-class QuranPageScreen extends StatefulWidget {
-  final int initialPage;
-
-  const QuranPageScreen({super.key, this.initialPage = 1});
+class QiblaScreen extends StatefulWidget {
+  const QiblaScreen({super.key});
 
   @override
-  State<QuranPageScreen> createState() => _QuranPageScreenState();
+  State<QiblaScreen> createState() => _QiblaScreenState();
 }
 
-class _QuranPageScreenState extends State<QuranPageScreen> {
-  // تم تصحيح الخطأ: استخدام widget.initialPage داخل initState وليس هنا
-  late final PageController _pageController;
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  int _currentPage = 1;
-  bool _showControls = true;
+class _QiblaScreenState extends State<QiblaScreen> {
+  double? _qiblaDirection;
+  String _status = 'جارٍ تحديد الموقع...';
 
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.initialPage;
-    _pageController = PageController(initialPage: widget.initialPage - 1);
+    _initQibla();
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _audioPlayer.dispose();
-    super.dispose();
-  }
-
-  Future<void> _playAyah(int surahId, int ayahId) async {
-    final url = 'https://everyayah.com/data/Alafasy_128kbps/${surahId.toString().padLeft(3, '0')}${ayahId.toString().padLeft(3, '0')}.mp3';
+  Future<void> _initQibla() async {
     try {
-      await _audioPlayer.setUrl(url);
-      _audioPlayer.play();
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+        setState(() => _status = 'يرجى تفعيل صلاحية الموقع لحساب القبلة');
+        return;
+      }
+      final position = await Geolocator.getCurrentPosition();
+      const kaabaLat = 21.4225;
+      const kaabaLng = 39.8262;
+      final lat1 = _toRadians(position.latitude);
+      final lon1 = _toRadians(position.longitude);
+      final lat2 = _toRadians(kaabaLat);
+      final lon2 = _toRadians(kaabaLng);
+      final dLon = lon2 - lon1;
+      final y = math.sin(dLon) * math.cos(lat2);
+      final x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dLon);
+      final bearing = math.atan2(y, x);
+      final bearingDegrees = (bearing * 180 / math.pi + 360) % 360;
+      setState(() {
+        _qiblaDirection = bearingDegrees;
+        _status = 'اتجاه القبلة محدد بدقة';
+      });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('خطأ في التشغيل: $e')));
+      setState(() => _status = 'تعذر تحديد الموقع: $e');
     }
   }
 
-  void _showAyahMenu(BuildContext context, int surahId, int ayahId, String ayahText) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildMenuItem(Icons.menu_book, 'تفسير', () => Navigator.pop(context)),
-              const Divider(height: 1),
-              _buildMenuItem(Icons.translate, 'ترجمة', () => Navigator.pop(context)),
-              const Divider(height: 1),
-              _buildMenuItem(Icons.bookmark_border, 'علامة مرجعية', () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تمت إضافة العلامة المرجعية')));
-              }),
-              const Divider(height: 1),
-              _buildMenuItem(Icons.play_circle_outline, 'الاستماع للآيات', () {
-                Navigator.pop(context);
-                _playAyah(surahId, ayahId);
-              }),
-              const Divider(height: 1),
-              _buildMenuItem(Icons.share, 'مشاركة', () {
-                Navigator.pop(context);
-                Share.share(ayahText);
-              }),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.skyDark),
-      title: Text(title, style: const TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.bold)),
-      onTap: onTap,
-    );
-  }
+  double _toRadians(double degree) => degree * math.pi / 180;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFBF7),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: AppColors.skyDark),
-          onPressed: () {},
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'الجزء ${(_currentPage / 20).ceil()}',
-              style: const TextStyle(fontFamily: 'Cairo', fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: AppColors.skyDark),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: GestureDetector(
-        onTap: () => setState(() => _showControls = !_showControls),
-        child: Stack(
-          children: [
-            QuranPageView(
-              controller: _pageController, // تم تصحيح اسم المتغير
-              onPageChanged: (page) async {
-                setState(() => _currentPage = page);
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setInt('last_read_page', page);
-              },
-              ayahBuilder: (context, surahNumber, verseNumber, pageNumber, ayahWidget, isHighlighted, highlightColor) {
-                return GestureDetector(
-                  onLongPress: () {
-                    HapticFeedback.mediumImpact();
-                    _showAyahMenu(context, surahNumber, verseNumber, 'نص الآية');
-                  },
-                  child: Container(
-                    color: isHighlighted ? highlightColor.withOpacity(0.3) : Colors.transparent,
-                    child: ayahWidget,
-                  ),
-                );
-              },
-            ),
-            if (_showControls)
-              Positioned(
-                bottom: 20,
-                left: 20,
-                right: 20,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      appBar: AppBar(title: const Text('اتجاه القبلة'), backgroundColor: Colors.transparent),
+      body: IslamicPatternBackground(
+        child: SafeArea(
+          child: Center(
+            child: _qiblaDirection == null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(icon: const Icon(Icons.visibility, color: Colors.grey), onPressed: () {}),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(color: AppColors.skyLight, borderRadius: BorderRadius.circular(15)),
-                        child: Text('$_currentPage', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.skyDark)),
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 20),
+                      Text(_status, style: AppTextStyles.body),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      StreamBuilder<CompassEvent>(
+                        stream: FlutterCompass.events,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) return Text('خطأ في البوصلة: ${snapshot.error}');
+                          if (snapshot.data == null) return const CircularProgressIndicator();
+                          final heading = snapshot.data!.heading ?? 0;
+                          final rotation = (_qiblaDirection! - heading) * math.pi / 180;
+                          return SizedBox(
+                            width: 280,
+                            height: 280,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: 280,
+                                  height: 280,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.surface,
+                                    border: Border.all(color: AppColors.divider, width: 2),
+                                    boxShadow: AppColors.mediumShadow,
+                                  ),
+                                ),
+                                Transform.rotate(
+                                  angle: rotation,
+                                  child: const Icon(Icons.navigation_rounded, size: 80, color: AppColors.skyDark),
+                                ),
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(gradient: AppColors.primaryGradient, shape: BoxShape.circle),
+                                  child: const Icon(Icons.mosque_rounded, color: Colors.white, size: 30),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                      IconButton(icon: const Icon(Icons.bookmark, color: Colors.grey), onPressed: () {}),
+                      const SizedBox(height: 30),
+                      Text(_status, style: AppTextStyles.body),
                     ],
                   ),
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );
