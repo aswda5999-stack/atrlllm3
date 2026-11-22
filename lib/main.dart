@@ -16,7 +16,7 @@ class AtharMuslimApp extends StatelessWidget {
       title: 'أثر مسلم',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      builder: (context, child) {
+      builder: (BuildContext context, Widget? child) {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: child ?? const SizedBox.shrink(),
