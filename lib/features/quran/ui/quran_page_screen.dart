@@ -16,7 +16,7 @@ class QuranPageScreen extends StatefulWidget {
 }
 
 class _QuranPageScreenState extends State<QuranPageScreen> {
-  final PageController _pageController = PageController(initialPage: widget.initialPage - 1); // تم الإصلاح هنا
+  late final PageController _pageController;
   final AudioPlayer _audioPlayer = AudioPlayer();
   int _currentPage = 1;
   bool _showControls = true;
@@ -25,6 +25,7 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
   void initState() {
     super.initState();
     _currentPage = widget.initialPage;
+    _pageController = PageController(initialPage: widget.initialPage - 1);
   }
 
   @override
@@ -51,11 +52,7 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
       builder: (context) {
         return Container(
           margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
-          ),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)]),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -99,24 +96,15 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: AppColors.skyDark),
-          onPressed: () {},
-        ),
+        leading: IconButton(icon: const Icon(Icons.menu, color: AppColors.skyDark), onPressed: () {}),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'الجزء ${(_currentPage / 20).ceil()}',
-              style: const TextStyle(fontFamily: 'Cairo', fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text('الجزء ${(_currentPage / 20).ceil()}', style: const TextStyle(fontFamily: 'Cairo', fontSize: 16, fontWeight: FontWeight.bold)),
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: AppColors.skyDark),
-            onPressed: () {},
-          ),
+          IconButton(icon: const Icon(Icons.search, color: AppColors.skyDark), onPressed: () {}),
         ],
       ),
       body: GestureDetector(
@@ -124,7 +112,7 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
         child: Stack(
           children: [
             QuranPageView(
-              pageController: _pageController, // تم الإصلاح هنا (كان controller)
+              controller: _pageController, // تم الإصلاح هنا (كان controller)
               onPageChanged: (page) async {
                 setState(() => _currentPage = page);
                 final prefs = await SharedPreferences.getInstance();
@@ -150,11 +138,7 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
                 right: 20,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)],
-                  ),
+                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), borderRadius: BorderRadius.circular(30), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)]),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
