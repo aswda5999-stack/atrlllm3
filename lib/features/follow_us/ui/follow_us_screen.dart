@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/islamic_pattern_background.dart';
 
-/// صفحة "تابعنا"
+/// صفحة "تابعنا" المطوّرة مع فتح الروابط ومشاركتها ونسخها
 class FollowUsScreen extends StatelessWidget {
   const FollowUsScreen({super.key});
 
@@ -11,101 +14,147 @@ class FollowUsScreen extends StatelessWidget {
     {
       'name': 'يوتيوب',
       'subtitle': 'قناتنا على يوتيوب',
+      'url': 'https://youtube.com',
       'icon': Icons.play_circle_fill_rounded,
       'color': Color(0xFFFF0000),
     },
     {
       'name': 'تيليجرام',
       'subtitle': 'قناتنا على تيليجرام',
+      'url': 'https://t.me',
       'icon': Icons.send_rounded,
       'color': Color(0xFF0088CC),
     },
     {
       'name': 'واتساب',
       'subtitle': 'تواصل معنا عبر واتساب',
+      'url': 'https://whatsapp.com',
       'icon': Icons.chat_rounded,
       'color': Color(0xFF25D366),
     },
     {
       'name': 'فيسبوك',
       'subtitle': 'صفحتنا على فيسبوك',
+      'url': 'https://facebook.com',
       'icon': Icons.facebook_rounded,
       'color': Color(0xFF1877F2),
     },
     {
       'name': 'انستغرام',
       'subtitle': 'حسابنا على انستغرام',
+      'url': 'https://instagram.com',
       'icon': Icons.camera_alt_rounded,
       'color': Color(0xFFE1306C),
     },
     {
       'name': 'الموقع الإلكتروني',
-      'subtitle': 'زيارة موقعنا',
+      'subtitle': 'زيارة موقعنا الرسمي',
+      'url': 'https://example.com',
       'icon': Icons.language_rounded,
       'color': Color(0xFF0C4A6E),
     },
   ];
 
+  Future<void> _openUrl(BuildContext context, String urlStr, String name) async {
+    final uri = Uri.parse(urlStr);
+    try {
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched && context.mounted) {
+        await Clipboard.setData(ClipboardData(text: urlStr));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تعذر فتح $name مباشرة، تم نسخ الرابط')),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        await Clipboard.setData(ClipboardData(text: urlStr));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تم نسخ رابط $name')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return IslamicPatternBackground(
-      child: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── العنوان ─────────────────────────────
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(14),
+    return Scaffold(
+      body: IslamicPatternBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.favorite_rounded,
+                          color: Colors.white, size: 24),
                     ),
-                    child: const Icon(Icons.favorite_rounded,
-                        color: Colors.white, size: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('تابعنا',
-                          style: AppTextStyles.headline.copyWith(fontSize: 22)),
-                      Text('ابقَ على تواصل معنا',
-                          style: AppTextStyles.caption),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // ── بطاقة معلومات التطبيق ────────────────
-              _AppInfoCard(),
-              const SizedBox(height: 24),
-
-              // ── روابط التواصل ───────────────────────
-              Text('حساباتنا الرسمية',
-                  style: AppTextStyles.title.copyWith(fontSize: 18)),
-              const SizedBox(height: 12),
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.25,
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('تابعنا',
+                            style: AppTextStyles.headline.copyWith(fontSize: 22)),
+                        Text('ابقَ على تواصل معنا وشارك الخير',
+                            style: AppTextStyles.caption),
+                      ],
+                    ),
+                  ],
                 ),
-                itemCount: _socialLinks.length,
-                itemBuilder: (context, index) {
-                  return _SocialCard(link: _socialLinks[index]);
-                },
-              ),
-            ],
+                const SizedBox(height: 20),
+
+                _AppInfoCard(
+                  onShareApp: () {
+                    Share.share(
+                      'تطبيق أثر مسلم — تطبيق إسلامي شامل يجمع القرآن الكريم، الأذكار، الأدعية، الأحاديث، الصوتيات، والمسبحة الإلكترونية.',
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+
+                Text('حساباتنا الرسمية',
+                    style: AppTextStyles.title.copyWith(fontSize: 18)),
+                const SizedBox(height: 12),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 1.2,
+                  ),
+                  itemCount: _socialLinks.length,
+                  itemBuilder: (context, index) {
+                    final link = _socialLinks[index];
+                    return _SocialCard(
+                      link: link,
+                      onTap: () => _openUrl(
+                        context,
+                        link['url'] as String,
+                        link['name'] as String,
+                      ),
+                      onLongPress: () {
+                        Clipboard.setData(
+                          ClipboardData(text: link['url'] as String),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('تم نسخ رابط ${link['name']}')),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -113,11 +162,10 @@ class FollowUsScreen extends StatelessWidget {
   }
 }
 
-// ══════════════════════════════════════════════════════
-//  بطاقة معلومات التطبيق
-// ══════════════════════════════════════════════════════
-
 class _AppInfoCard extends StatelessWidget {
+  final VoidCallback onShareApp;
+  const _AppInfoCard({required this.onShareApp});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -136,14 +184,14 @@ class _AppInfoCard extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 70,
-            height: 70,
+            width: 68,
+            height: 68,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(Icons.mosque_rounded,
-                color: Colors.white, size: 40),
+                color: Colors.white, size: 38),
           ),
           const SizedBox(height: 12),
           Text('أثر مسلم',
@@ -151,11 +199,26 @@ class _AppInfoCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text('الإصدار 1.0.0',
               style: AppTextStyles.captionOnDark.copyWith(fontSize: 12)),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
-            'تطبيق إسلامي شامل يجمع القرآن الكريم، الأذكار، الصوتيات، ومواقيت الصلاة في تجربة واحدة أنيقة.',
+            'تطبيق إسلامي شامل يجمع القرآن الكريم، الأذكار، الأدعية، الأحاديث، الصوتيات، ومواقيت الصلاة في تجربة واحدة أنيقة.',
             textAlign: TextAlign.center,
             style: AppTextStyles.captionOnDark.copyWith(fontSize: 12),
+          ),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            onPressed: onShareApp,
+            icon: const Icon(Icons.share_rounded, color: Colors.white, size: 18),
+            label: const Text(
+              'مشاركة التطبيق',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: Colors.white.withOpacity(0.6)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
           ),
         ],
       ),
@@ -163,14 +226,16 @@ class _AppInfoCard extends StatelessWidget {
   }
 }
 
-// ══════════════════════════════════════════════════════
-//  بطاقة رابط تواصل
-// ══════════════════════════════════════════════════════
-
 class _SocialCard extends StatefulWidget {
   final Map<String, dynamic> link;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
-  const _SocialCard({required this.link});
+  const _SocialCard({
+    required this.link,
+    required this.onTap,
+    required this.onLongPress,
+  });
 
   @override
   State<_SocialCard> createState() => _SocialCardState();
@@ -187,9 +252,8 @@ class _SocialCardState extends State<_SocialCard> {
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
-      onTap: () {
-        // TODO: فتح الرابط عبر url_launcher
-      },
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
       child: AnimatedScale(
         scale: _pressed ? 0.95 : 1.0,
         duration: const Duration(milliseconds: 150),
