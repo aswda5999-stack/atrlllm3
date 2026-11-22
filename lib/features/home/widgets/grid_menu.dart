@@ -3,7 +3,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../quran/ui/quran_screen.dart';
 import '../../audio/ui/audio_screen.dart';
-import '../../adhkar/ui/adhkar_screen.dart';
+import '../../adhkar/ui/adhkar_screen.dart'; // تأكد من وجود هذا السطر
 import '../../prayer/ui/prayer_screen.dart';
 import '../../hadiths/ui/hadiths_screen.dart';
 import '../../duas/ui/duas_screen.dart';
