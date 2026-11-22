@@ -49,15 +49,20 @@ jobs:
           p.write_text(text, encoding="utf-8")
           '
 
-      - name: Fix minSdkVersion in build.gradle.kts
+      - name: Fix minSdkVersion
         run: |
           python3 -c '
           from pathlib import Path
           import re
-          p = Path("temp_app/android/app/build.gradle.kts")
-          text = p.read_text(encoding="utf-8")
-          text = re.sub(r"minSdk\s*=\s*.*", "minSdk = 21", text)
-          p.write_text(text, encoding="utf-8")
+          for name in ["build.gradle.kts", "build.gradle"]:
+              p = Path("temp_app/android/app") / name
+              if p.exists():
+                  text = p.read_text(encoding="utf-8")
+                  text = re.sub(r"minSdk\s*=\s*.*", "minSdk = 21", text)
+                  text = re.sub(r"minSdkVersion\s+.*", "minSdkVersion 21", text)
+                  p.write_text(text, encoding="utf-8")
+                  print(f"Updated {p}")
+                  break
           '
 
       - name: Install dependencies
