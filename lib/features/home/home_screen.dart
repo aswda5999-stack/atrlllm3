@@ -39,12 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: _pageController,
         onPageChanged: (index) => setState(() => _currentIndex = index),
         physics: const BouncingScrollPhysics(),
-        children: [
-          const _HomeTab(),
-          const AudioScreen(),
-          const QuranScreen(),
-          const AdhkarScreen(),
-          const FollowUsScreen(),
+        children: const [
+          _HomeTab(),
+          AudioScreen(),
+          QuranScreen(),
+          AdhkarScreen(),
+          FollowUsScreen(),
         ],
       ),
       bottomNavigationBar: AppBottomNav(currentIndex: _currentIndex, onTap: _onNavTap),
