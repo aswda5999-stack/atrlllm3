@@ -14,20 +14,20 @@ class AdhkarDetailsScreen extends StatefulWidget {
 
 class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
   late final List> _adhkarList;
-  final Map<int, int> _counters = {};
+  final Map<int, int> _counters = <int, int>{};
 
   @override
   void initState() {
     super.initState();
-    final rawItems = widget.category['items'];
+    final dynamic rawItems = widget.category['items'];
     if (rawItems is List) {
       _adhkarList = rawItems
-          .whereType()
-          .map((e) => Map<String, dynamic>.from(e))
+          .whereType>()
+          .map((Map<dynamic, dynamic> e) => Map<String, dynamic>.from(e))
           .toList();
     } else {
-      _adhkarList = [
-        {
+      _adhkarList = >[
+        <String, dynamic>{
           'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ.',
           'reference': 'متفق عليه',
           'count': 1,
@@ -77,14 +77,13 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
         child: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: _adhkarList.length,
-          itemBuilder: (context, index) {
-            final dhikr = _adhkarList[index];
+          itemBuilder: (BuildContext context, int index) {
+            final Map<String, dynamic> dhikr = _adhkarList[index];
             final String text = (dhikr['text'] ?? '').toString();
             final String reference = (dhikr['reference'] ?? '').toString();
+            final dynamic rawCount = dhikr['count'];
             final int target =
-                (dhikr['count'] is int && (dhikr['count'] as int) > 0)
-                    ? dhikr['count'] as int
-                    : 1;
+                (rawCount is int && rawCount > 0) ? rawCount : 1;
             final int count = _counters[index] ?? 0;
             final bool isCompleted = count >= target;
 
@@ -98,7 +97,7 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
                   color: isCompleted ? AppColors.skyPrimary : AppColors.skyLight,
                   width: 1.4,
                 ),
-                boxShadow: [
+                boxShadow: <BoxShadow>[
                   BoxShadow(
                     color: AppColors.skyDark.withOpacity(0.05),
                     blurRadius: 10,
@@ -108,7 +107,7 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+                children: <Widget>[
                   Text(
                     text,
                     textAlign: TextAlign.right,
@@ -119,7 +118,7 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  if (reference.isNotEmpty) ...[
+                  if (reference.isNotEmpty) ...<Widget>[
                     const SizedBox(height: 10),
                     Text(
                       reference,
@@ -132,7 +131,7 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
                   const SizedBox(height: 14),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       ElevatedButton.icon(
                         onPressed: () => _incrementCounter(index, target),
                         style: ElevatedButton.styleFrom(
