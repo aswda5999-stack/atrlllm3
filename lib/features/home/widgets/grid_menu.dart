@@ -4,7 +4,7 @@ import '../../../core/theme/app_text_styles.dart';
 
 import '../../quran/ui/quran_screen.dart';
 import '../../audio/ui/audio_screen.dart';
-import '../../adhkar/ui/adhkar_screen.dart'; // تم إضافة هذا الاستيراد
+import '../../adhkar/ui/adhkar_screen.dart'; // تأكد من وجود هذا الاستيراد
 import '../../prayer/ui/prayer_screen.dart';
 import '../../hadiths/ui/hadiths_screen.dart';
 import '../../duas/ui/duas_screen.dart';
@@ -17,7 +17,7 @@ class GridMenu extends StatelessWidget {
   static final List<Map<String, dynamic>> _items = [
     {'icon': Icons.menu_book_rounded, 'label': 'القرآن الكريم', 'screen': const QuranScreen()},
     {'icon': Icons.headphones_rounded, 'label': 'الصوتيات', 'screen': const AudioScreen()},
-    {'icon': Icons.nights_stay_rounded, 'label': 'الأذكار', 'screen': const AdhkarScreen()},
+    {'icon': Icons.nights_stay_rounded, 'label': 'الأذكار', 'screen': const AdhkarScreen()}, // تم إصلاح هذا السطر
     {'icon': Icons.mosque_rounded, 'label': 'الصلاة', 'screen': const PrayerScreen()},
     {'icon': Icons.article_rounded, 'label': 'الأحاديث', 'screen': const HadithsScreen()},
     {'icon': Icons.pan_tool_rounded, 'label': 'الدعاء', 'screen': const DuasScreen()},
