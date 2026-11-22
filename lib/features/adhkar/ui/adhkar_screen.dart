@@ -1,215 +1,189 @@
-/// بيانات الأذكار الحقيقية من مصادر موثوقة (حصن المسلم - فتاوى ابن باز)
-/// كل ذكر يحتوي على: النص، عدد التكرارات، والمرجع
-class AdhkarData {
-  AdhkarData._();
+import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/islamic_pattern_background.dart';
+import 'adhkar_details_screen.dart';
 
-  // ══════════════════════════════════════════════════════
-  //  أذكار الصباح والمساء (مشتركة)
-  // ══════════════════════════════════════════════════════
-  static const List<Map<String, dynamic>> morningEvening = [
+/// صفحة الأذكار — تصنيفات الأذكار
+class AdhkarScreen extends StatelessWidget {
+  const AdhkarScreen({super.key});
+
+  static const List<Map<String, dynamic>> _categories = [
     {
-      'text': 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ. اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ',
-      'target': 1,
-      'reference': 'البخاري',
+      'title': 'أذكار الصباح',
+      'subtitle': 'ما يُقال في الصباح',
+      'icon': Icons.wb_sunny_rounded,
+      'color': Color(0xFFF59E0B),
     },
     {
-      'text': 'قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',
-      'target': 3,
-      'reference': 'أبو داود',
+      'title': 'أذكار المساء',
+      'subtitle': 'ما يُقال في المساء',
+      'icon': Icons.nights_stay_rounded,
+      'color': Color(0xFF0284C7),
     },
     {
-      'text': 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِنْ شَرِّ مَا خَلَقَ ۝ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ',
-      'target': 3,
-      'reference': 'أبو داود',
+      'title': 'أذكار النوم',
+      'subtitle': 'ما يُقال قبل النوم',
+      'icon': Icons.bedtime_rounded,
+      'color': Color(0xFF6366F1),
     },
     {
-      'text': 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَهِ النَّاسِ ۝ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ',
-      'target': 3,
-      'reference': 'أبو داود',
+      'title': 'أذكار الاستيقاظ',
+      'subtitle': 'ما يُقال عند الاستيقاظ',
+      'icon': Icons.alarm_rounded,
+      'color': Color(0xFF10B981),
     },
     {
-      'text': 'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ. رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ',
-      'target': 1,
-      'reference': 'مسلم',
+      'title': 'أذكار بعد الصلاة',
+      'subtitle': 'الأذكار المشروعة بعد السلام',
+      'icon': Icons.mosque_rounded,
+      'color': Color(0xFF0EA5E9),
     },
     {
-      'text': 'اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ',
-      'target': 1,
-      'reference': 'صحيح أبي داود',
-    },
-    {
-      'text': 'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي، فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ',
-      'target': 1,
-      'reference': 'البخاري',
-    },
-    {
-      'text': 'اللَّهُمَّ فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ، عَالِمَ الْغَيْبِ وَالشَّهَادَةِ، لَا إِلَهَ إِلَّا أَنْتَ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ الشَّيْطَانِ وَشِرْكِهِ، وَأَنْ أَقْتَرِفَ عَلَى نَفْسِي سُوءًا أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ',
-      'target': 1,
-      'reference': 'الترمذي',
-    },
-    {
-      'text': 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي، وَعَنْ يَمِينِي وَعَنْ شِمَالِي، وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي',
-      'target': 1,
-      'reference': 'أبو داود وابن ماجه',
-    },
-    {
-      'text': 'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ',
-      'target': 3,
-      'reference': 'أبو داود والترمذي',
-    },
-    {
-      'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ',
-      'target': 3,
-      'reference': 'مسلم',
-    },
-    {
-      'text': 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا',
-      'target': 1,
-      'reference': 'ابن ماجه',
-    },
-    {
-      'text': 'أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ',
-      'target': 100,
-      'reference': 'البخاري ومسلم',
-    },
-    {
-      'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',
-      'target': 100,
-      'reference': 'مسلم',
-    },
-    {
-      'text': 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
-      'target': 10,
-      'reference': 'البخاري',
+      'title': 'أذكار متفرقة',
+      'subtitle': 'أذكار وأوراد عامة',
+      'icon': Icons.auto_awesome_rounded,
+      'color': Color(0xFF8B5CF6),
     },
   ];
 
-  // ══════════════════════════════════════════════════════
-  //  أذكار النوم
-  // ══════════════════════════════════════════════════════
-  static const List<Map<String, dynamic>> sleep = [
-    {
-      'text': 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',
-      'target': 1,
-      'reference': 'البخاري',
-    },
-    {
-      'text': 'اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ',
-      'target': 3,
-      'reference': 'أبو داود والترمذي',
-    },
-    {
-      'text': 'سُبْحَانَ اللَّهِ (33) وَالْحَمْدُ لِلَّهِ (33) وَاللَّهُ أَكْبَرُ (34)',
-      'target': 1,
-      'reference': 'البخاري ومسلم',
-    },
-    {
-      'text': 'اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ، وَفَوَّضْتُ أَمْرِي إِلَيْكَ، وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ، رَغْبَةً وَرَهْبَةً إِلَيْكَ، لَا مَلْجَأَ وَلَا مَنْجَا مِنْكَ إِلَّا إِلَيْكَ، آمَنْتُ بِكِتَابِكَ الَّذِي أَنْزَلْتَ، وَبِنَبِيِّكَ الَّذِي أَرْسَلْتَ',
-      'target': 1,
-      'reference': 'البخاري ومسلم',
-    },
-    {
-      'text': 'بِسْمِ اللَّهِ وَضَعْتُ جَنْبِي، اللَّهُمَّ اغْفِرْ لِي ذَنْبِي، وَأَخْسِئْ شَيْطَانِي، وَفُكَّ رِهَانِي، وَاجْعَلْنِي فِي النَّدِيِّ الْأَعْلَى',
-      'target': 1,
-      'reference': 'أبو داود',
-    },
-  ];
+  @override
+  Widget build(BuildContext context) {
+    return IslamicPatternBackground(
+      child: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.nights_stay_rounded,
+                        color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('الأذكار',
+                          style: AppTextStyles.headline.copyWith(fontSize: 22)),
+                      Text('حصن المسلم اليومي',
+                          style: AppTextStyles.caption),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 1.05,
+                ),
+                itemCount: _categories.length,
+                itemBuilder: (context, index) {
+                  return _AdhkarCategoryCard(category: _categories[index]);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-  // ══════════════════════════════════════════════════════
-  //  أذكار الاستيقاظ
-  // ══════════════════════════════════════════════════════
-  static const List<Map<String, dynamic>> wakeUp = [
-    {
-      'text': 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',
-      'target': 1,
-      'reference': 'البخاري',
-    },
-    {
-      'text': 'الْحَمْدُ لِلَّهِ الَّذِي عَافَانِي فِي جَسَدِي، وَرَدَّ عَلَيَّ رُوحِي، وَأَذِنَ لِي بِذِكْرِهِ',
-      'target': 1,
-      'reference': 'الترمذي',
-    },
-    {
-      'text': 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
-      'target': 1,
-      'reference': 'البخاري',
-    },
-  ];
+class _AdhkarCategoryCard extends StatefulWidget {
+  final Map<String, dynamic> category;
 
-  // ══════════════════════════════════════════════════════
-  //  أذكار بعد الصلاة
-  // ══════════════════════════════════════════════════════
-  static const List<Map<String, dynamic>> afterPrayer = [
-    {
-      'text': 'أَسْتَغْفِرُ اللَّهَ، أَسْتَغْفِرُ اللَّهَ، أَسْتَغْفِرُ اللَّهَ. اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ',
-      'target': 1,
-      'reference': 'مسلم',
-    },
-    {
-      'text': 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَلَا نَعْبُدُ إِلَّا إِيَّاهُ، لَهُ النِّعْمَةُ وَلَهُ الْفَضْلُ وَلَهُ الثَّنَاءُ الْحَسَنُ، لَا إِلَهَ إِلَّا اللَّهُ مُخْلِصِينَ لَهُ الدِّينَ وَلَوْ كَرِهَ الْكَافِرُونَ',
-      'target': 1,
-      'reference': 'مسلم',
-    },
-    {
-      'text': 'اللَّهُمَّ لَا مَانِعَ لِمَا أَعْطَيْتَ، وَلَا مُعْطِيَ لِمَا مَنَعْتَ، وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ',
-      'target': 1,
-      'reference': 'البخاري ومسلم',
-    },
-    {
-      'text': 'سُبْحَانَ اللَّهِ (33) وَالْحَمْدُ لِلَّهِ (33) وَاللَّهُ أَكْبَرُ (33) ثُمَّ: لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
-      'target': 1,
-      'reference': 'مسلم',
-    },
-    {
-      'text': 'آيَةُ الْكُرْسِيِّ: اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...',
-      'target': 1,
-      'reference': 'البخاري',
-    },
-    {
-      'text': 'قُلْ هُوَ اللَّهُ أَحَدٌ، وَقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ، وَقُلْ أَعُوذُ بِرَبِّ النَّاسِ',
-      'target': 1,
-      'reference': 'أبو داود',
-    },
-  ];
+  const _AdhkarCategoryCard({required this.category});
 
-  // ══════════════════════════════════════════════════════
-  //  أذكار متفرقة
-  // ══════════════════════════════════════════════════════
-  static const List<Map<String, dynamic>> misc = [
-    {
-      'text': 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
-      'target': 10,
-      'reference': 'البخاري',
-    },
-    {
-      'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ',
-      'target': 100,
-      'reference': 'البخاري ومسلم',
-    },
-    {
-      'text': 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',
-      'target': 100,
-      'reference': 'البخاري',
-    },
-    {
-      'text': 'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ',
-      'target': 100,
-      'reference': 'البخاري',
-    },
-  ];
+  @override
+  State<_AdhkarCategoryCard> createState() => _AdhkarCategoryCardState();
+}
 
-  /// دالة مساعدة لجلب أذكار قسم معين
-  static List<Map<String, dynamic>> getByCategory(String categoryTitle) {
-    if (categoryTitle.contains('الصباح') || categoryTitle.contains('المساء')) {
-      return morningEvening;
-    } else if (categoryTitle.contains('النوم')) {
-      return sleep;
-    } else if (categoryTitle.contains('الاستيقاظ')) {
-      return wakeUp;
-    } else if (categoryTitle.contains('بعد الصلاة')) {
-      return afterPrayer;
-    } else {
-      return misc;
-    }
+class _AdhkarCategoryCardState extends State<_AdhkarCategoryCard> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = widget.category['color'] as Color;
+
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AdhkarDetailsScreen(category: widget.category),
+          ),
+        );
+      },
+      child: AnimatedScale(
+        scale: _pressed ? 0.95 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.divider),
+            boxShadow: _pressed
+                ? []
+                : [
+                    BoxShadow(
+                      color: color.withOpacity(0.1),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  widget.category['icon'] as IconData,
+                  color: color,
+                  size: 26,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                widget.category['title'],
+                style: AppTextStyles.title.copyWith(fontSize: 15),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                widget.category['subtitle'],
+                style: AppTextStyles.tiny,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
