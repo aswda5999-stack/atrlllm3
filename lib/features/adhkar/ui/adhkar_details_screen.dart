@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/islamic_pattern_background.dart';
-import '../data/adhkar_data.dart';
-import '../models/dhikr_model.dart';
 
 class AdhkarDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> category;
@@ -15,19 +13,28 @@ class AdhkarDetailsScreen extends StatefulWidget {
 }
 
 class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
-  late final List<DhikrModel> _adhkarList;
+  late final List> _adhkarList;
   final Map<int, int> _counters = {};
 
   @override
   void initState() {
     super.initState();
-    final String categoryTitle = (widget.category['title'] ?? '').toString();
-    _adhkarList = AdhkarData.adhkarList
-        .where((item) => item.category == categoryTitle)
-        .toList();
-    if (_adhkarList.isEmpty) {
-      _adhkarList.addAll(AdhkarData.adhkarList);
+    final rawItems = widget.category['items'];
+    if (rawItems is List) {
+      _adhkarList = rawItems
+          .whereType()
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList();
+    } else {
+      _adhkarList = [
+        {
+          'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ.',
+          'reference': 'متفق عليه',
+          'count': 1,
+        },
+      ];
     }
+
     for (int i = 0; i < _adhkarList.length; i++) {
       _counters[i] = 0;
     }
@@ -54,7 +61,14 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title, style: AppTextStyles.screenTitle),
+        title: Text(
+          title,
+          style: AppTextStyles.body.copyWith(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: AppColors.surface,
         elevation: 0,
@@ -65,8 +79,13 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
           itemCount: _adhkarList.length,
           itemBuilder: (context, index) {
             final dhikr = _adhkarList[index];
+            final String text = (dhikr['text'] ?? '').toString();
+            final String reference = (dhikr['reference'] ?? '').toString();
+            final int target =
+                (dhikr['count'] is int && (dhikr['count'] as int) > 0)
+                    ? dhikr['count'] as int
+                    : 1;
             final int count = _counters[index] ?? 0;
-            final int target = dhikr.count > 0 ? dhikr.count : 1;
             final bool isCompleted = count >= target;
 
             return Container(
@@ -76,9 +95,7 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color: isCompleted
-                      ? AppColors.skyPrimary
-                      : AppColors.skyLight,
+                  color: isCompleted ? AppColors.skyPrimary : AppColors.skyLight,
                   width: 1.4,
                 ),
                 boxShadow: [
@@ -93,7 +110,7 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    dhikr.text,
+                    text,
                     textAlign: TextAlign.right,
                     style: AppTextStyles.body.copyWith(
                       fontSize: 17,
@@ -102,10 +119,10 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  if (dhikr.reference.isNotEmpty) ...[
+                  if (reference.isNotEmpty) ...[
                     const SizedBox(height: 10),
                     Text(
-                      dhikr.reference,
+                      reference,
                       textAlign: TextAlign.right,
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.textSecondary,
