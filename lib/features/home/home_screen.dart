@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/widgets/app_bottom_nav.dart';
 import '../../core/widgets/islamic_pattern_background.dart';
 import '../adhkar/ui/adhkar_screen.dart';
 import '../audio/ui/audio_screen.dart';
@@ -36,13 +35,41 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],
-      bottomNavigationBar: AppBottomNav(
-        currentIndex: _currentIndex,
-        onTap: (int index) {
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (int index) {
           setState(() {
             _currentIndex = index;
           });
         },
+        backgroundColor: AppColors.surface,
+        destinations: const <NavigationDestination>[
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'الرئيسية',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.menu_book_outlined),
+            selectedIcon: Icon(Icons.menu_book),
+            label: 'المصحف',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.headphones_outlined),
+            selectedIcon: Icon(Icons.headphones),
+            label: 'الصوتيات',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.wb_sunny_outlined),
+            selectedIcon: Icon(Icons.wb_sunny),
+            label: 'الأذكار',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.share_outlined),
+            selectedIcon: Icon(Icons.share),
+            label: 'تابعنا',
+          ),
+        ],
       ),
     );
   }
@@ -55,7 +82,7 @@ class _HomeDashboardTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> quickActions = <Map<String, dynamic>>[
+    final List> quickActions = >[
       <String, dynamic>{
         'title': 'المصحف الشريف',
         'subtitle': 'قراءة وتلاوة القرآن الكريم',
@@ -140,7 +167,7 @@ class _HomeDashboardTab extends StatelessWidget {
 }
 
 class GridMenu extends StatelessWidget {
-  final List<Map<String, dynamic>> items;
+  final List> items;
   final ValueChanged<int> onSelectTab;
 
   const GridMenu({
