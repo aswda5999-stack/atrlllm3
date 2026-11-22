@@ -15,7 +15,7 @@ class _AudioScreenState extends State<AudioScreen> {
   String _query = '';
   String? _selectedReciter;
 
-  final List> _reciters = >[
+  final List<Map<String, String>> _reciters = <Map<String, String>>[
     <String, String>{
       'name': 'مشاري راشد العفاسي',
       'riwaya': 'حفص عن عاصم',
@@ -44,7 +44,7 @@ class _AudioScreenState extends State<AudioScreen> {
     super.dispose();
   }
 
-  List> get _filteredReciters {
+  List<Map<String, String>> get _filteredReciters {
     final String trimmed = _query.trim();
     if (trimmed.isEmpty) {
       return _reciters;
@@ -60,7 +60,7 @@ class _AudioScreenState extends State<AudioScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List> list = _filteredReciters;
+    final List<Map<String, String>> list = _filteredReciters;
 
     return Scaffold(
       appBar: AppBar(
