@@ -6,24 +6,24 @@ import '../../../core/widgets/islamic_pattern_background.dart';
 class FollowUsScreen extends StatelessWidget {
   FollowUsScreen({super.key});
 
-  static final List> _socialLinks = [
+  final List> _socialLinks = [
     {
       'title': 'قناة يوتيوب',
       'subtitle': 'تلاوات ومقاطع دعوية وتربوية',
       'icon': Icons.play_circle_fill,
-      'color': Color(0xFFFF0000),
+      'color': const Color(0xFFFF0000),
     },
     {
       'title': 'قناة تيليغرام',
       'subtitle': 'تحديثات التطبيق وفوائد يومية',
       'icon': Icons.send,
-      'color': Color(0xFF0088CC),
+      'color': const Color(0xFF0088CC),
     },
     {
       'title': 'صفحة فيسبوك',
       'subtitle': 'منشورات ومشاركات المجتمع',
       'icon': Icons.public,
-      'color': Color(0xFF1877F2),
+      'color': const Color(0xFF1877F2),
     },
   ];
 
@@ -31,7 +31,14 @@ class FollowUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تابعنا', style: AppTextStyles.screenTitle),
+        title: Text(
+          'تابعنا',
+          style: AppTextStyles.body.copyWith(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: AppColors.surface,
         elevation: 0,
@@ -42,6 +49,7 @@ class FollowUsScreen extends StatelessWidget {
           itemCount: _socialLinks.length,
           itemBuilder: (context, index) {
             final item = _socialLinks[index];
+            final Color itemColor = item['color'] as Color;
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
@@ -61,10 +69,10 @@ class FollowUsScreen extends StatelessWidget {
                   vertical: 8,
                 ),
                 leading: CircleAvatar(
-                  backgroundColor: (item['color'] as Color).withOpacity(0.12),
+                  backgroundColor: itemColor.withOpacity(0.12),
                   child: Icon(
                     item['icon'] as IconData,
-                    color: item['color'] as Color,
+                    color: itemColor,
                   ),
                 ),
                 title: Text(
