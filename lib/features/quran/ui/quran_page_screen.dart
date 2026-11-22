@@ -112,7 +112,7 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
         child: Stack(
           children: [
             QuranPageView(
-              controller: _pageController, // تم الإصلاح هنا (كان controller)
+              pageController: _pageController, // التصحيح: pageController وليس controller
               onPageChanged: (page) async {
                 setState(() => _currentPage = page);
                 final prefs = await SharedPreferences.getInstance();
