@@ -1,54 +1,72 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../settings/ui/settings_screen.dart';
+import 'global_search_sheet.dart';
 
 /// شريط البحث العلوي + زر الإعدادات
-/// يظهر في أعلى الواجهة الرئيسية
+/// يظهر في أعلى الواجهة الرئيسية ويدعم البحث الشامل الفوري
 class TopSearchBar extends StatelessWidget {
   const TopSearchBar({super.key});
+
+  void _openGlobalSearch(BuildContext context, {String query = ''}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => GlobalSearchSheet(initialQuery: query),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // ── حقل البحث ────────────────────────────────
+        // ── حقل البحث الشامل ────────────────────────
         Expanded(
-          child: Container(
-            height: 52,
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.divider),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.skyPrimary.withOpacity(0.06),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 14),
-                const Icon(Icons.search_rounded,
-                    color: AppColors.skyDark, size: 22),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    style: AppTextStyles.body.copyWith(fontSize: 14),
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      hintText: 'ابحث في القرآن، الأذكار، الأدعية...',
-                      hintStyle: AppTextStyles.caption
-                          .copyWith(color: AppColors.textSecondary),
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
+          child: GestureDetector(
+            onTap: () => _openGlobalSearch(context),
+            child: Container(
+              height: 52,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.divider),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.skyPrimary.withOpacity(0.06),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 14),
+                  const Icon(Icons.search_rounded,
+                      color: AppColors.skyDark, size: 22),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: IgnorePointer(
+                      child: TextField(
+                        style: AppTextStyles.body.copyWith(fontSize: 14),
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          hintText: 'ابحث في القرآن، الأذكار، الأدعية...',
+                          hintStyle: AppTextStyles.caption
+                              .copyWith(color: AppColors.textSecondary),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-              ],
+                  const SizedBox(width: 10),
+                ],
+              ),
             ),
           ),
         ),
@@ -57,7 +75,10 @@ class TopSearchBar extends StatelessWidget {
         // ── زر الإعدادات ─────────────────────────────
         _SettingsButton(
           onTap: () {
-            // TODO: التنقل إلى صفحة الإعدادات
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            );
           },
         ),
       ],
