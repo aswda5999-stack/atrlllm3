@@ -1,3 +1,4 @@
+import 'package:just_audio/just_audio.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -16,6 +17,42 @@ class AzanSettingsScreen extends StatefulWidget {
 
 class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
   final List<String?> _azanPaths = List.filled(7, null);
+  final AudioPlayer _previewPlayer = AudioPlayer();
+  int? _playingSlot;
+
+  @override
+  void dispose() {
+    _previewPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _togglePreview(int index) async {
+    final path = _azanPaths[index];
+    if (path == null) return;
+    if (_playingSlot == index && _previewPlayer.playing) {
+      await _previewPlayer.stop();
+      setState(() => _playingSlot = null);
+      return;
+    }
+    try {
+      await _previewPlayer.stop();
+      await _previewPlayer.setFilePath(path);
+      setState(() => _playingSlot = index);
+      await _previewPlayer.play();
+      _previewPlayer.playerStateStream.listen((state) {
+        if (state.processingState == ProcessingState.completed && mounted) {
+          setState(() => _playingSlot = null);
+        }
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() => _playingSlot = null);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تعذر تشغيل الملف الصوتي: $e')),
+        );
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -214,12 +251,18 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: ElevatedButton.icon(
-                                onPressed: () {
-                                  // TODO: تشغيل تجريبي للملف
-                                },
-                                icon: const Icon(Icons.play_arrow_rounded,
-                                    size: 18),
-                                label: const Text('تجربة'),
+                                onPressed: () => _togglePreview(index),
+                                icon: Icon(
+                                  _playingSlot == index && _previewPlayer.playing
+                                      ? Icons.stop_rounded
+                                      : Icons.play_arrow_rounded,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  _playingSlot == index && _previewPlayer.playing
+                                      ? 'إيقاف'
+                                      : 'تجربة',
+                                ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.skyDark,
                                   shape: RoundedRectangleBorder(

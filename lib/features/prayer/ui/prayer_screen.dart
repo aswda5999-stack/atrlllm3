@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+import 'azan_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:adhan/adhan.dart';
@@ -69,10 +71,30 @@ class _PrayerScreenState extends State<PrayerScreen> {
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      // 4. حساب مواقيت الصلاة
+      // 4. حساب مواقيت الصلاة وفق الإعدادات المحفوظة
+      final prefs = await SharedPreferences.getInstance();
+      final methodKey = prefs.getString('prayer_calc_method') ?? 'umm_al_qura';
+      final madhabKey = prefs.getString('prayer_madhab') ?? 'shafi';
+      CalculationMethod method;
+      switch (methodKey) {
+        case 'muslim_world_league':
+          method = CalculationMethod.muslim_world_league;
+          break;
+        case 'egyptian':
+          method = CalculationMethod.egyptian;
+          break;
+        case 'karachi':
+          method = CalculationMethod.karachi;
+          break;
+        case 'north_america':
+          method = CalculationMethod.north_america;
+          break;
+        default:
+          method = CalculationMethod.umm_al_qura;
+      }
       final coordinates = Coordinates(position.latitude, position.longitude);
-      final params = CalculationMethod.umm_al_qura.getParameters();
-      params.madhab = Madhab.shafi;
+      final params = method.getParameters();
+      params.madhab = madhabKey == 'hanafi' ? Madhab.hanafi : Madhab.shafi;
       final prayerTimes = PrayerTimes.today(coordinates, params);
 
       setState(() {
@@ -347,9 +369,9 @@ class _AzanSettingsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: الانتقال إلى إعدادات الأذان (7 فتحات)
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('قريباً: إعدادات الأذان')),
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AzanSettingsScreen()),
         );
       },
       child: Container(
