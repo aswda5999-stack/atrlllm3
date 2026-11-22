@@ -33,6 +33,27 @@ jobs:
           cp pubspec.yaml temp_app/pubspec.yaml
           if [ -d "assets" ]; then cp -r assets temp_app/assets; fi
 
+      - name: Auto-fix Dart Generic Brackets and Navigation
+        run: |
+          python3 -c '
+          from pathlib import Path
+          import re
+
+          lib_dir = Path("temp_app/lib")
+          for dart_file in lib_dir.rglob("*.dart"):
+              text = dart_file.read_text(encoding="utf-8")
+              text = re.sub(r"\bfinal\s+List>\s+(\w+)\s*=\s*>\s*\[", r"final List> \1 = >[", text)
+              text = re.sub(r"\bfinal\s+List>\s+(\w+)\s*=\s*\[", r"final List> \1 = >[", text)
+              text = re.sub(r"\bfinal\s+List>\s+(\w+);", r"final List> \1;", text)
+              text = re.sub(r"\bList>\s+get\s+(\w+)\s*\{", r"List> get \1 {", text)
+              text = re.sub(r"\bList>\s+(\w+)\s*=", r"List> \1 =", text)
+              text = text.replace("const GridMenu(", "GridMenu(")
+              text = text.replace("const AdhkarScreen()", "AdhkarScreen()")
+              text = text.replace("const FollowUsScreen()", "FollowUsScreen()")
+              dart_file.write_text(text, encoding="utf-8")
+          print("Auto-fix completed across Dart files.")
+          '
+
       - name: Configure AndroidManifest
         run: |
           python3 -c '
