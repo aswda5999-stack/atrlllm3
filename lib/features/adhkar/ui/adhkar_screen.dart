@@ -7,26 +7,84 @@ import 'adhkar_details_screen.dart';
 class AdhkarScreen extends StatelessWidget {
   AdhkarScreen({super.key});
 
-  static final List> _categories = [
+  final List> _categories = [
     {
       'title': 'أذكار الصباح',
       'subtitle': 'حصن المسلم في بداية اليوم',
       'icon': Icons.wb_sunny_outlined,
+      'items': [
+        {
+          'text': 'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
+          'reference': 'رواه مسلم',
+          'count': 1,
+        },
+        {
+          'text': 'اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.',
+          'reference': 'رواه الترمذي',
+          'count': 1,
+        },
+        {
+          'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ.',
+          'reference': 'رواه مسلم',
+          'count': 100,
+        },
+      ],
     },
     {
       'title': 'أذكار المساء',
       'subtitle': 'سكينة وطمأنينة آخر النهار',
       'icon': Icons.nights_stay_outlined,
+      'items': [
+        {
+          'text': 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
+          'reference': 'رواه مسلم',
+          'count': 1,
+        },
+        {
+          'text': 'اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ.',
+          'reference': 'رواه الترمذي',
+          'count': 1,
+        },
+        {
+          'text': 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.',
+          'reference': 'رواه مسلم',
+          'count': 3,
+        },
+      ],
     },
     {
       'title': 'أذكار بعد الصلاة',
       'subtitle': 'تسبيح واستغفار عقب الفرائض',
       'icon': Icons.mosque_outlined,
+      'items': [
+        {
+          'text': 'أَسْتَغْفِرُ اللَّهَ (ثلاثاً)، اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ.',
+          'reference': 'رواه مسلم',
+          'count': 1,
+        },
+        {
+          'text': 'سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَاللَّهُ أَكْبَرُ.',
+          'reference': 'متفق عليه',
+          'count': 33,
+        },
+      ],
     },
     {
       'title': 'أذكار النوم',
       'subtitle': 'أذكار تسبق النوم والراحة',
       'icon': Icons.bedtime_outlined,
+      'items': [
+        {
+          'text': 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا.',
+          'reference': 'رواه البخاري',
+          'count': 1,
+        },
+        {
+          'text': 'اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.',
+          'reference': 'رواه أبو داود والترمذي',
+          'count': 3,
+        },
+      ],
     },
   ];
 
@@ -34,7 +92,14 @@ class AdhkarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الأذكار', style: AppTextStyles.screenTitle),
+        title: Text(
+          'الأذكار',
+          style: AppTextStyles.body.copyWith(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: AppColors.surface,
         elevation: 0,
