@@ -15,6 +15,7 @@ class QuranScreen extends StatefulWidget {
 class _QuranScreenState extends State<QuranScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  final FocusNode _searchFocusNode = FocusNode();
 
   // ── بيانات السور الـ 114 كاملة مع أرقام الصفحات ──
   static const List<Map<String, dynamic>> _surahs = [
@@ -146,6 +147,7 @@ class _QuranScreenState extends State<QuranScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -155,36 +157,47 @@ class _QuranScreenState extends State<QuranScreen> {
       child: SafeArea(
         child: Column(
           children: [
-            // ── شريط البحث ─────────────────────────────
+            // ── شريط البحث المحسن ─────────────────────────
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Container(
-                height: 52,
                 decoration: BoxDecoration(
                   color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.divider),
-                ),
-                child: Row(
-                  children: [
-                    const SizedBox(width: 14),
-                    const Icon(Icons.search_rounded, color: AppColors.skyDark, size: 22),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (val) => setState(() => _searchQuery = val.trim()),
-                        style: AppTextStyles.body.copyWith(fontSize: 14),
-                        decoration: InputDecoration(
-                          hintText: 'ابحث عن سورة...',
-                          hintStyle: AppTextStyles.caption,
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.skyPrimary.withOpacity(0.08),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
                     ),
                   ],
+                  border: Border.all(
+                    color: _searchFocusNode.hasFocus ? AppColors.skyPrimary : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  focusNode: _searchFocusNode,
+                  onChanged: (val) => setState(() => _searchQuery = val.trim()),
+                  style: AppTextStyles.body.copyWith(fontSize: 15),
+                  decoration: InputDecoration(
+                    hintText: 'ابحث عن سورة...',
+                    hintStyle: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.skyDark, size: 24),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, color: AppColors.textSecondary),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _searchQuery = '');
+                              _searchFocusNode.unfocus();
+                            },
+                          )
+                        : null,
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                 ),
               ),
             ),
@@ -193,7 +206,7 @@ class _QuranScreenState extends State<QuranScreen> {
             Expanded(
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 itemCount: _filteredSurahs.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
@@ -232,12 +245,11 @@ class _SurahCardState extends State<_SurahCard> {
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
       onTap: () {
-        // ── الانتقال إلى صفحة المصحف ──
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => QuranPageScreen(
-              initialPage: widget.surah['page'] ?? 1, // فتح على صفحة السورة
+              initialPage: widget.surah['page'] ?? 1,
             ),
           ),
         );
@@ -287,12 +299,15 @@ class _SurahCardState extends State<_SurahCard> {
                 children: [
                   Text(
                     widget.surah['name'],
+                    // ── إزالة الخط الأصفر (التسطير) نهائياً ──
                     style: const TextStyle(
                       fontFamily: 'Thuluth',
-                      fontSize: 22,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
-                      height: 1.2,
+                      height: 1.1,
+                      decoration: TextDecoration.none, // إزالة التسطير
+                      decorationColor: Colors.transparent, // إزالة لون التسطير
                     ),
                   ),
                   const SizedBox(height: 4),
