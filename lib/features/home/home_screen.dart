@@ -10,7 +10,6 @@ import 'widgets/continue_reading_card.dart';
 import 'widgets/grid_menu.dart';
 import 'widgets/top_search_bar.dart';
 
-/// الشاشة الرئيسية لتطبيق "أثر مسلم"
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -37,23 +36,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _onPageChanged(int index) {
-    setState(() => _currentIndex = index);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        onPageChanged: _onPageChanged,
+        onPageChanged: (index) => setState(() => _currentIndex = index),
         physics: const BouncingScrollPhysics(),
-        children: const [
-          _HomeTab(),
-          AudioScreen(),      // تبويب الصوتيات
-          QuranScreen(),      // تبويب القرآن
-          AdhkarScreen(),     // تبويب الأذكار
-          FollowUsScreen(),   // تبويب تابعنا
+        children: [
+          const _HomeTab(),
+          const AudioScreen(),
+          const QuranScreen(),
+          const AdhkarScreen(),
+          const FollowUsScreen(),
         ],
       ),
       bottomNavigationBar: AppBottomNav(
@@ -63,10 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-// ══════════════════════════════════════════════════════
-//  محتوى الصفحة الرئيسية (Tab 1)
-// ══════════════════════════════════════════════════════
 
 class _HomeTab extends StatelessWidget {
   const _HomeTab();
