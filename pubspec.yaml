@@ -24,6 +24,7 @@ dependencies:
   adhan: ^2.0.0              # لحساب مواقيت الصلاة
   flutter_compass: ^0.8.0    # للبوصلة
   file_picker: ^8.0.0+1      # لاختيار ملفات الأذان المخصصة
+  url_launcher: ^6.2.5       # لفتح روابط التواصل الاجتماعي
 
 dev_dependencies:
   flutter_test:
