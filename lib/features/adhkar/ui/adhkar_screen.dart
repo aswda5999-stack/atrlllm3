@@ -7,79 +7,79 @@ import 'adhkar_details_screen.dart';
 class AdhkarScreen extends StatelessWidget {
   AdhkarScreen({super.key});
 
-  final List> _categories = [
-    {
+  final List> _categories = >[
+    <String, dynamic>{
       'title': 'أذكار الصباح',
       'subtitle': 'حصن المسلم في بداية اليوم',
       'icon': Icons.wb_sunny_outlined,
-      'items': [
-        {
+      'items': >[
+        <String, dynamic>{
           'text': 'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
           'reference': 'رواه مسلم',
           'count': 1,
         },
-        {
+        <String, dynamic>{
           'text': 'اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.',
           'reference': 'رواه الترمذي',
           'count': 1,
         },
-        {
+        <String, dynamic>{
           'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ.',
           'reference': 'رواه مسلم',
           'count': 100,
         },
       ],
     },
-    {
+    <String, dynamic>{
       'title': 'أذكار المساء',
       'subtitle': 'سكينة وطمأنينة آخر النهار',
       'icon': Icons.nights_stay_outlined,
-      'items': [
-        {
+      'items': >[
+        <String, dynamic>{
           'text': 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
           'reference': 'رواه مسلم',
           'count': 1,
         },
-        {
+        <String, dynamic>{
           'text': 'اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ.',
           'reference': 'رواه الترمذي',
           'count': 1,
         },
-        {
+        <String, dynamic>{
           'text': 'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.',
           'reference': 'رواه مسلم',
           'count': 3,
         },
       ],
     },
-    {
+    <String, dynamic>{
       'title': 'أذكار بعد الصلاة',
       'subtitle': 'تسبيح واستغفار عقب الفرائض',
       'icon': Icons.mosque_outlined,
-      'items': [
-        {
+      'items': >[
+        <String, dynamic>{
           'text': 'أَسْتَغْفِرُ اللَّهَ (ثلاثاً)، اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ.',
           'reference': 'رواه مسلم',
           'count': 1,
         },
-        {
+        <String, dynamic>{
           'text': 'سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَاللَّهُ أَكْبَرُ.',
           'reference': 'متفق عليه',
           'count': 33,
         },
       ],
     },
-    {
+    <String, dynamic>{
       'title': 'أذكار النوم',
       'subtitle': 'أذكار تسبق النوم والراحة',
       'icon': Icons.bedtime_outlined,
-      'items': [
-        {
+      'items': >[
+        <String, dynamic>{
           'text': 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا.',
           'reference': 'رواه البخاري',
           'count': 1,
         },
-        {
+        <String, dynamic>{
           'text': 'اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.',
           'reference': 'رواه أبو داود والترمذي',
           'count': 3,
@@ -108,8 +108,8 @@ class AdhkarScreen extends StatelessWidget {
         child: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: _categories.length,
-          itemBuilder: (context, index) {
-            final category = _categories[index];
+          itemBuilder: (BuildContext context, int index) {
+            final Map<String, dynamic> category = _categories[index];
             return Card(
               margin: const EdgeInsets.only(bottom: 12),
               shape: RoundedRectangleBorder(
@@ -139,7 +139,7 @@ class AdhkarScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
+                    MaterialPageRoute<Widget>(
                       builder: (_) => AdhkarDetailsScreen(category: category),
                     ),
                   );
