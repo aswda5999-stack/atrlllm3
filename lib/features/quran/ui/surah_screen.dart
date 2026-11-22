@@ -7,16 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 
-/// صفحة عرض السورة باستخدام حزمة qcf_quran_plus
 class SurahScreen extends StatefulWidget {
   final int surahId;
   final String surahName;
 
-  const SurahScreen({
-    super.key,
-    required this.surahId,
-    required this.surahName,
-  });
+  const SurahScreen({super.key, required this.surahId, required this.surahName});
 
   @override
   State<SurahScreen> createState() => _SurahScreenState();
@@ -33,14 +28,12 @@ class _SurahScreenState extends State<SurahScreen> {
     _loadFavorites();
   }
 
-  /// تحميل الآيات المفضلة من الذاكرة
   Future<void> _loadFavorites() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('favorite_ayahs') ?? [];
     setState(() => _favorites.addAll(saved));
   }
 
-  /// إضافة/إزالة الآية من المفضلة
   Future<void> _toggleFavorite(int surah, int ayah) async {
     final key = '$surah:$ayah';
     final prefs = await SharedPreferences.getInstance();
@@ -54,7 +47,6 @@ class _SurahScreenState extends State<SurahScreen> {
     await prefs.setStringList('favorite_ayahs', _favorites.toList());
   }
 
-  /// تشغيل تلاوة الآية
   Future<void> _playAudio(int surah, int ayah) async {
     if (_playingAyah == ayah) {
       await _audioPlayer.stop();
@@ -80,7 +72,6 @@ class _SurahScreenState extends State<SurahScreen> {
     }
   }
 
-  /// عرض التفسير في نافذة سفلية
   void _showTafsir(int surah, int ayah, String text) {
     showModalBottomSheet(
       context: context,
@@ -118,6 +109,7 @@ class _SurahScreenState extends State<SurahScreen> {
       ),
       body: QuranSurahListView(
         surahNumber: widget.surahId,
+        highlights: const [], // تم إضافة المعامل هنا
         ayahBuilder: (context, surahNumber, verseNumber, pageNumber, ayahWidget, isHighlighted, highlightColor) {
           final isFav = _favorites.contains('$surahNumber:$verseNumber');
           final isPlaying = _playingAyah == verseNumber;
@@ -127,7 +119,6 @@ class _SurahScreenState extends State<SurahScreen> {
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              // تلوين الآية بشكل احترافي عند التلاوة أو التحديد
               color: isPlaying 
                   ? highlightColor.withOpacity(0.2) 
                   : (isHighlighted ? highlightColor.withOpacity(0.1) : AppColors.surface),
@@ -141,10 +132,8 @@ class _SurahScreenState extends State<SurahScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // نص الآية
                 ayahWidget,
                 const SizedBox(height: 12),
-                // شريط الأدوات السفلي
                 Row(
                   children: [
                     _buildIconButton(
@@ -186,7 +175,6 @@ class _SurahScreenState extends State<SurahScreen> {
     );
   }
 
-  /// بناء أيقونة تفاعلية صغيرة
   Widget _buildIconButton({required IconData icon, required Color color, required VoidCallback onTap}) {
     return IconButton(
       onPressed: onTap,
