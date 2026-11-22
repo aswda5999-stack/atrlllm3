@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
-/// السمة الشاملة لتطبيق "أثر مسلم"
 class AppTheme {
   AppTheme._();
 
@@ -12,8 +11,6 @@ class AppTheme {
       brightness: Brightness.light,
       primaryColor: AppColors.skyDark,
       scaffoldBackgroundColor: AppColors.background,
-
-      // ── نظام الألوان ──────────────────────────────────
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.skyPrimary,
         brightness: Brightness.light,
@@ -24,8 +21,6 @@ class AppTheme {
         onSecondary: AppColors.textPrimary,
         onSurface: AppColors.textPrimary,
       ),
-
-      // ── شريط التطبيق ─────────────────────────────────
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -34,9 +29,7 @@ class AppTheme {
         iconTheme: IconThemeData(color: AppColors.skyDark),
         titleTextStyle: AppTextStyles.headline,
       ),
-
-      // ── البطاقات ──────────────────────────────────────
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData( // تم التعديل هنا
         color: AppColors.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -45,20 +38,14 @@ class AppTheme {
           side: const BorderSide(color: AppColors.divider, width: 1),
         ),
       ),
-
-      // ── الأزرار النصية ───────────────────────────────
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.skyDark,
           textStyle: AppTextStyles.buttonSecondary,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
-
-      // ── الأزرار المرتفعة ─────────────────────────────
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.skyDark,
@@ -66,13 +53,9 @@ class AppTheme {
           elevation: 0,
           textStyle: AppTextStyles.button,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
       ),
-
-      // ── الحقول النصية ────────────────────────────────
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surfaceSoft,
@@ -91,42 +74,22 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.skyPrimary, width: 1.5),
         ),
       ),
-
-      // ── شريط التنقل السفلي ───────────────────────────
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.surface,
         selectedItemColor: AppColors.skyDark,
         unselectedItemColor: AppColors.textSecondary,
-        selectedLabelStyle: AppTextStyles.caption.copyWith(
-          fontWeight: FontWeight.w700,
-          color: AppColors.skyDark,
-        ),
+        selectedLabelStyle: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w700, color: AppColors.skyDark),
         unselectedLabelStyle: AppTextStyles.caption,
         type: BottomNavigationBarType.fixed,
         elevation: 12,
         showUnselectedLabels: true,
       ),
-
-      // ── فواصل ────────────────────────────────────────
-      dividerTheme: const DividerThemeData(
-        color: AppColors.divider,
-        thickness: 1,
-        space: 1,
-      ),
-
-      // ── أيقونات ──────────────────────────────────────
-      iconTheme: const IconThemeData(
-        color: AppColors.skyDark,
-        size: 24,
-      ),
-
-      // ── شريط التمرير ─────────────────────────────────
+      dividerTheme: const DividerThemeData(color: AppColors.divider, thickness: 1, space: 1),
+      iconTheme: const IconThemeData(color: AppColors.skyDark, size: 24),
       scrollbarTheme: ScrollbarThemeData(
-        thumbColor: MaterialStateProperty.all(
-          AppColors.skyPrimary.withOpacity(0.5),
-        ),
+        thumbColor: WidgetStateProperty.all(AppColors.skyPrimary.withOpacity(0.5)),
         radius: const Radius.circular(8),
-        thickness: MaterialStateProperty.all(6),
+        thickness: WidgetStateProperty.all(6),
       ),
     );
   }
