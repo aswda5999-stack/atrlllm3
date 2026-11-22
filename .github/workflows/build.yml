@@ -1,6 +1,6 @@
 name: Build Flutter APK
 
-on:
+"on":
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
@@ -10,51 +10,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.41.0'
-        channel: 'stable'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.1'
+          channel: 'stable'
 
-    - name: Setup Flutter Project Scaffolding
-      run: |
-        flutter create temp_app
-        rm -rf temp_app/lib
-        cp -r lib temp_app/lib
-        cp pubspec.yaml temp_app/pubspec.yaml
-        if [ -d "assets" ]; then cp -r assets temp_app/assets; fi
+      - name: Setup Flutter Project Scaffolding
+        run: |
+          flutter create --project-name athar_muslim --org com.athar.muslim temp_app
+          rm -rf temp_app/lib
+          cp -r lib temp_app/lib
+          cp pubspec.yaml temp_app/pubspec.yaml
+          if [ -d "assets" ]; then cp -r assets temp_app/assets; fi
 
-    - name: Add Permissions to AndroidManifest
-      run: |
-        MANIFEST="temp_app/android/app/src/main/AndroidManifest.xml"
-        sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET"\/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"\/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"\/>
-    <application/' "$MANIFEST"
+      - name: Configure AndroidManifest
+        run: |
+          python3 -c '
+          from pathlib import Path
+          p = Path("temp_app/android/app/src/main/AndroidManifest.xml")
+          text = p.read_text(encoding="utf-8")
+          perms = """    <uses-permission android:name="android.permission.INTERNET" />
+          <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+          <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+          <uses-permission android:name="android.permission.VIBRATE" />
+          <application"""
+          text = text.replace("<application", perms, 1)
+          text = text.replace("android:label=\"athar_muslim\"", "android:label=\"أثر مسلم\"", 1)
+          p.write_text(text, encoding="utf-8")
+          '
 
-    - name: Fix minSdkVersion in build.gradle.kts
-      run: |
-        sed -i 's/minSdk = .*/minSdk = 21/' temp_app/android/app/build.gradle.kts
+      - name: Fix minSdkVersion in build.gradle.kts
+        run: |
+          python3 -c '
+          from pathlib import Path
+          import re
+          p = Path("temp_app/android/app/build.gradle.kts")
+          text = p.read_text(encoding="utf-8")
+          text = re.sub(r"minSdk\s*=\s*.*", "minSdk = 21", text)
+          p.write_text(text, encoding="utf-8")
+          '
 
-    - name: Install dependencies
-      run: flutter pub get
-      working-directory: ./temp_app
+      - name: Install dependencies
+        working-directory: ./temp_app
+        run: flutter pub get
 
-    - name: Build APK
-      run: flutter build apk --release
-      working-directory: ./temp_app
+      - name: Build APK
+        working-directory: ./temp_app
+        run: flutter build apk --release
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: athar-muslim-apk
-        path: temp_app/build/app/outputs/flutter-apk/app-release.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: athar-muslim-apk
+          path: temp_app/build/app/outputs/flutter-apk/app-release.apk
