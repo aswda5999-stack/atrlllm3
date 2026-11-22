@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-
 import '../../quran/ui/quran_screen.dart';
 import '../../audio/ui/audio_screen.dart';
 import '../../adhkar/ui/adhkar_screen.dart';
@@ -37,13 +36,11 @@ class GridMenu extends StatelessWidget {
         childAspectRatio: 0.82,
       ),
       itemCount: _items.length,
-      itemBuilder: (context, index) {
-        return _AnimatedMenuButton(
-          icon: _items[index]['icon'] as IconData,
-          label: _items[index]['label'] as String,
-          screen: _items[index]['screen'] as Widget,
-        );
-      },
+      itemBuilder: (context, index) => _AnimatedMenuButton(
+        icon: _items[index]['icon'] as IconData,
+        label: _items[index]['label'] as String,
+        screen: _items[index]['screen'] as Widget,
+      ),
     );
   }
 }
@@ -68,9 +65,7 @@ class _AnimatedMenuButtonState extends State<_AnimatedMenuButton> {
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => widget.screen));
-      },
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => widget.screen)),
       child: AnimatedScale(
         scale: _pressed ? 0.92 : 1.0,
         duration: const Duration(milliseconds: 120),
