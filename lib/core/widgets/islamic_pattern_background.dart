@@ -16,13 +16,11 @@ class IslamicPatternBackground extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // النقش الهندسي الإسلامي
           Positioned.fill(
             child: CustomPaint(
               painter: _IslamicPatternPainter(),
             ),
           ),
-          // المحتوى
           child,
         ],
       ),
@@ -41,7 +39,6 @@ class _IslamicPatternPainter extends CustomPainter {
     const double spacing = 70.0;
     const double radius = 22.0;
 
-    // رسم نجمة ثمانية إسلامية بشكل متكرر
     for (double x = 0; x < size.width + spacing; x += spacing) {
       for (double y = 0; y < size.height + spacing; y += spacing) {
         _drawIslamicStar(canvas, paint, Offset(x, y), radius);
@@ -49,14 +46,17 @@ class _IslamicPatternPainter extends CustomPainter {
     }
   }
 
-  /// رسم نجمة ثمانية (نجمة إسلامية كلاسيكية) بإحداثيات مركزية
-  void _drawIslamicStar(Canvas canvas, Paint paint, Offset center, double radius) {
+  void _drawIslamicStar(
+    Canvas canvas,
+    Paint paint,
+    Offset center,
+    double radius,
+  ) {
     final path = Path();
     const int points = 8;
     final double angleStep = (3.141592653589793 * 2) / points;
 
     for (int i = 0; i < points; i++) {
-      // نقاط النجمة الثمانية (نقطة خارجية ونقطة داخلية بالتبادل)
       final double outerAngle = i * angleStep;
       final double innerAngle = outerAngle + angleStep / 2;
 
@@ -76,7 +76,6 @@ class _IslamicPatternPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  // دوال رياضية بديلة لتجنب استيراد dart:math (أخف وأسرع)
   double _cos(double x) => _sin(x + 1.5707963267948966);
   double _sin(double x) {
     x = x % 6.283185307179586;
