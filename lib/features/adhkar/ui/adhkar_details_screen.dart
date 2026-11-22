@@ -13,7 +13,7 @@ class AdhkarDetailsScreen extends StatefulWidget {
 }
 
 class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
-  late final List> _adhkarList;
+  late final List<Map<String, dynamic>> _adhkarList;
   final Map<int, int> _counters = <int, int>{};
 
   @override
@@ -22,11 +22,11 @@ class _AdhkarDetailsScreenState extends State<AdhkarDetailsScreen> {
     final dynamic rawItems = widget.category['items'];
     if (rawItems is List) {
       _adhkarList = rawItems
-          .whereType>()
+          .whereType<Map<dynamic, dynamic>>()
           .map((Map<dynamic, dynamic> e) => Map<String, dynamic>.from(e))
           .toList();
     } else {
-      _adhkarList = >[
+      _adhkarList = <Map<String, dynamic>>[
         <String, dynamic>{
           'text': 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ.',
           'reference': 'متفق عليه',
