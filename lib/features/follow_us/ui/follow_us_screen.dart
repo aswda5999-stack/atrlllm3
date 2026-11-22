@@ -6,20 +6,20 @@ import '../../../core/widgets/islamic_pattern_background.dart';
 class FollowUsScreen extends StatelessWidget {
   FollowUsScreen({super.key});
 
-  final List> _socialLinks = [
-    {
+  final List> _socialLinks = >[
+    <String, dynamic>{
       'title': 'قناة يوتيوب',
       'subtitle': 'تلاوات ومقاطع دعوية وتربوية',
       'icon': Icons.play_circle_fill,
       'color': const Color(0xFFFF0000),
     },
-    {
+    <String, dynamic>{
       'title': 'قناة تيليغرام',
       'subtitle': 'تحديثات التطبيق وفوائد يومية',
       'icon': Icons.send,
       'color': const Color(0xFF0088CC),
     },
-    {
+    <String, dynamic>{
       'title': 'صفحة فيسبوك',
       'subtitle': 'منشورات ومشاركات المجتمع',
       'icon': Icons.public,
@@ -47,15 +47,15 @@ class FollowUsScreen extends StatelessWidget {
         child: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: _socialLinks.length,
-          itemBuilder: (context, index) {
-            final item = _socialLinks[index];
+          itemBuilder: (BuildContext context, int index) {
+            final Map<String, dynamic> item = _socialLinks[index];
             final Color itemColor = item['color'] as Color;
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
+                boxShadow: <BoxShadow>[
                   BoxShadow(
                     color: AppColors.skyDark.withOpacity(0.05),
                     blurRadius: 10,
