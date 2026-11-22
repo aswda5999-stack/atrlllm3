@@ -6,7 +6,7 @@ import '../../../core/widgets/islamic_pattern_background.dart';
 class FollowUsScreen extends StatelessWidget {
   FollowUsScreen({super.key});
 
-  final List> _socialLinks = >[
+  final List<Map<String, dynamic>> _socialLinks = <Map<String, dynamic>>[
     <String, dynamic>{
       'title': 'قناة يوتيوب',
       'subtitle': 'تلاوات ومقاطع دعوية وتربوية',
