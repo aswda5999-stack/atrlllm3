@@ -14,7 +14,7 @@ class _QuranScreenState extends State<QuranScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
 
-  final List<Map<String, String>> _surahs = <Map<String, String>>[
+  final List> _surahs = >[
     <String, String>{'number': '1', 'name': 'الفاتحة', 'type': 'مكية'},
     <String, String>{'number': '2', 'name': 'البقرة', 'type': 'مدنية'},
     <String, String>{'number': '3', 'name': 'آل عمران', 'type': 'مدنية'},
@@ -29,7 +29,7 @@ class _QuranScreenState extends State<QuranScreen> {
     super.dispose();
   }
 
-  List<Map<String, String>> get _filteredSurahs {
+  List> get _filteredSurahs {
     final String trimmed = _query.trim();
     if (trimmed.isEmpty) {
       return _surahs;
@@ -46,7 +46,7 @@ class _QuranScreenState extends State<QuranScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> list = _filteredSurahs;
+    final List> list = _filteredSurahs;
 
     return Scaffold(
       appBar: AppBar(
