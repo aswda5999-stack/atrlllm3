@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _HomeTab(),
           AudioScreen(),
           QuranScreen(),
-          AdhkarScreen(),
+          AdhkarScreen(), // تم إزالة const
           FollowUsScreen(),
         ],
       ),
