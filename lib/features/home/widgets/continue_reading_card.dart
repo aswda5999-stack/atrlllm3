@@ -1,16 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../quran/ui/quran_page_screen.dart';
 
-/// بطاقة "متابعة القراءة" — تعرض آخر سورة/آية قرأها المستخدم
-class ContinueReadingCard extends StatelessWidget {
+class ContinueReadingCard extends StatefulWidget {
   const ContinueReadingCard({super.key});
 
   @override
+  State<ContinueReadingCard> createState() => _ContinueReadingCardState();
+}
+
+class _ContinueReadingCardState extends State<ContinueReadingCard> {
+  int _lastPage = 1;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLastPage();
+  }
+
+  Future<void> _loadLastPage() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _lastPage = prefs.getInt('last_read_page') ?? 1; // الافتراضي صفحة 1
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) return const SizedBox.shrink();
+
+    // حساب اسم الجزء تقريبياً (كل 20 صفحة = جزء)
+    final juzNumber = ((_lastPage - 1) / 20).floor() + 1;
+
     return GestureDetector(
-      onTap: () {
-        // TODO: التنقل إلى آخر صفحة قراءة
+      onTap: () async {
+        // الانتقال الفعلي للمصحف
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuranPageScreen(initialPage: _lastPage),
+          ),
+        );
+        // تحديث الصفحة عند العودة
+        _loadLastPage();
       },
       child: Container(
         padding: const EdgeInsets.all(18),
@@ -27,7 +63,6 @@ class ContinueReadingCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // ── أيقونة زخرفية شفافة ──────────────────
             Positioned(
               left: -15,
               top: -15,
@@ -37,11 +72,8 @@ class ContinueReadingCard extends StatelessWidget {
                 color: Colors.white.withOpacity(0.1),
               ),
             ),
-
-            // ── المحتوى ──────────────────────────────
             Row(
               children: [
-                // أيقونة دائرية
                 Container(
                   width: 52,
                   height: 52,
@@ -49,39 +81,25 @@ class ContinueReadingCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Icon(
-                    Icons.menu_book_rounded,
-                    color: Colors.white,
-                    size: 28,
-                  ),
+                  child: const Icon(Icons.menu_book_rounded, color: Colors.white, size: 28),
                 ),
                 const SizedBox(width: 14),
-
-                // النص
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'متابعة القراءة',
-                        style: AppTextStyles.captionOnDark.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: AppTextStyles.captionOnDark.copyWith(fontSize: 12, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'سورة الكهف · الآية 10',
-                        style: AppTextStyles.titleOnDark.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        'الجزء $juzNumber · صفحة $_lastPage',
+                        style: AppTextStyles.titleOnDark.copyWith(fontSize: 16, fontWeight: FontWeight.w800),
                       ),
                     ],
                   ),
                 ),
-
-                // سهم الانتقال
                 Container(
                   width: 36,
                   height: 36,
@@ -89,11 +107,7 @@ class ContinueReadingCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 16),
                 ),
               ],
             ),
