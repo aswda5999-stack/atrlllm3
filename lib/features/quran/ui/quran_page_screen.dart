@@ -125,9 +125,10 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
         onTap: () => setState(() => _showControls = !_showControls),
         child: Stack(
           children: [
-            // ── استخدام QuranPageView بالطريقة الصحيحة ──
+            // الحل الجذري: إضافة highlights: const []
             QuranPageView(
               pageController: _pageController,
+              highlights: const [], // <--- هذا هو السطر الناقص الذي كان يسبب الخطأ
               onPageChanged: (page) async {
                 setState(() => _currentPage = page);
                 final prefs = await SharedPreferences.getInstance();
