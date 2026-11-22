@@ -55,7 +55,7 @@ class _HomeDashboardTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List> quickActions = >[
+    final List<Map<String, dynamic>> quickActions = <Map<String, dynamic>>[
       <String, dynamic>{
         'title': 'المصحف الشريف',
         'subtitle': 'قراءة وتلاوة القرآن الكريم',
@@ -140,7 +140,7 @@ class _HomeDashboardTab extends StatelessWidget {
 }
 
 class GridMenu extends StatelessWidget {
-  final List> items;
+  final List<Map<String, dynamic>> items;
   final ValueChanged<int> onSelectTab;
 
   const GridMenu({
