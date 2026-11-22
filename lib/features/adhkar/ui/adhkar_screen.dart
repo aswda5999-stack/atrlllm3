@@ -7,12 +7,12 @@ import 'adhkar_details_screen.dart';
 class AdhkarScreen extends StatelessWidget {
   AdhkarScreen({super.key});
 
-  final List> _categories = >[
+  final List<Map<String, dynamic>> _categories = <Map<String, dynamic>>[
     <String, dynamic>{
       'title': 'أذكار الصباح',
       'subtitle': 'حصن المسلم في بداية اليوم',
       'icon': Icons.wb_sunny_outlined,
-      'items': >[
+      'items': <Map<String, dynamic>>[
         <String, dynamic>{
           'text': 'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
           'reference': 'رواه مسلم',
@@ -34,7 +34,7 @@ class AdhkarScreen extends StatelessWidget {
       'title': 'أذكار المساء',
       'subtitle': 'سكينة وطمأنينة آخر النهار',
       'icon': Icons.nights_stay_outlined,
-      'items': >[
+      'items': <Map<String, dynamic>>[
         <String, dynamic>{
           'text': 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
           'reference': 'رواه مسلم',
@@ -56,7 +56,7 @@ class AdhkarScreen extends StatelessWidget {
       'title': 'أذكار بعد الصلاة',
       'subtitle': 'تسبيح واستغفار عقب الفرائض',
       'icon': Icons.mosque_outlined,
-      'items': >[
+      'items': <Map<String, dynamic>>[
         <String, dynamic>{
           'text': 'أَسْتَغْفِرُ اللَّهَ (ثلاثاً)، اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ.',
           'reference': 'رواه مسلم',
@@ -73,7 +73,7 @@ class AdhkarScreen extends StatelessWidget {
       'title': 'أذكار النوم',
       'subtitle': 'أذكار تسبق النوم والراحة',
       'icon': Icons.bedtime_outlined,
-      'items': >[
+      'items': <Map<String, dynamic>>[
         <String, dynamic>{
           'text': 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا.',
           'reference': 'رواه البخاري',
