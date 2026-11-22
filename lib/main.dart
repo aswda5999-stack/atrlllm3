@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:qcf_quran_plus/qcf_quran_plus.dart';
 import 'core/theme/app_theme.dart';
 import 'features/home/home_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await QcfQuran.initialize();
   runApp(const AtharMuslimApp());
 }
 
