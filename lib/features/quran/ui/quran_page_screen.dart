@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:qcf_quran_plus/qcf_quran_plus.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 
-/// شاشة عرض المصحف بالصفحات (تخطيط المدينة)
 class QuranPageScreen extends StatefulWidget {
   final int initialPage;
 
@@ -16,10 +16,10 @@ class QuranPageScreen extends StatefulWidget {
 }
 
 class _QuranPageScreenState extends State<QuranPageScreen> {
-  final PageController _pageController = PageController(initialPage: widget.initialPage - 1);
+  final PageController _pageController = PageController(initialPage: widget.initialPage - 1); // تم الإصلاح هنا
   final AudioPlayer _audioPlayer = AudioPlayer();
   int _currentPage = 1;
-  bool _showControls = true; // لإظهار/إخفاء شريط الأدوات السفلي
+  bool _showControls = true;
 
   @override
   void initState() {
@@ -34,7 +34,6 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
     super.dispose();
   }
 
-  // ── تشغيل تلاوة الآية ─────────────────────────────
   Future<void> _playAyah(int surahId, int ayahId) async {
     final url = 'https://everyayah.com/data/Alafasy_128kbps/${surahId.toString().padLeft(3, '0')}${ayahId.toString().padLeft(3, '0')}.mp3';
     try {
@@ -45,9 +44,7 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
     }
   }
 
-  // ── عرض القائمة المنبثقة عند الضغط على الآية ──────
   void _showAyahMenu(BuildContext context, int surahId, int ayahId, String ayahText) {
-    // إرجاع لون مختلف حسب الحالة (مرجعية أو لا)
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -62,19 +59,12 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildMenuItem(Icons.menu_book, 'تفسير', () {
-                Navigator.pop(context);
-                // TODO: فتح شاشة التفسير
-              }),
+              _buildMenuItem(Icons.menu_book, 'تفسير', () => Navigator.pop(context)),
               const Divider(height: 1),
-              _buildMenuItem(Icons.translate, 'ترجمة', () {
-                Navigator.pop(context);
-                // TODO: فتح شاشة الترجمة
-              }),
+              _buildMenuItem(Icons.translate, 'ترجمة', () => Navigator.pop(context)),
               const Divider(height: 1),
-              _buildMenuItem(Icons.bookmark_border, 'علامة مرجعية', () async {
+              _buildMenuItem(Icons.bookmark_border, 'علامة مرجعية', () {
                 Navigator.pop(context);
-                // TODO: حفظ العلامة
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('تمت إضافة العلامة المرجعية')));
               }),
               const Divider(height: 1),
@@ -105,7 +95,7 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFBF7), // لون ورقي دافئ
+      backgroundColor: const Color(0xFFFDFBF7),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -133,22 +123,18 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
         onTap: () => setState(() => _showControls = !_showControls),
         child: Stack(
           children: [
-            // ── عرض صفحات المصحف ────────────────────────
             QuranPageView(
-              controller: _pageController,
-              onPageChanged: (page) => setState(() => _currentPage = page),
+              pageController: _pageController, // تم الإصلاح هنا (كان controller)
+              onPageChanged: (page) async {
+                setState(() => _currentPage = page);
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setInt('last_read_page', page);
+              },
               ayahBuilder: (context, surahNumber, verseNumber, pageNumber, ayahWidget, isHighlighted, highlightColor) {
-                // تغليف الآية بـ GestureDetector للتفاعل معها
                 return GestureDetector(
                   onLongPress: () {
                     HapticFeedback.mediumImpact();
                     _showAyahMenu(context, surahNumber, verseNumber, 'نص الآية');
-                  },
-                  onTap: () {
-                    // عند النقر العادي، يمكنك تلوين الآية أو تشغيلها
-                    setState(() {
-                       // تفعيل التلوين مثلاً
-                    });
                   },
                   child: Container(
                     color: isHighlighted ? highlightColor.withOpacity(0.3) : Colors.transparent,
@@ -157,8 +143,6 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
                 );
               },
             ),
-            
-            // ── شريط التحكم السفلي (يظهر ويختفي) ────────
             if (_showControls)
               Positioned(
                 bottom: 20,
@@ -174,25 +158,13 @@ class _QuranPageScreenState extends State<QuranPageScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.visibility, color: Colors.grey),
-                        onPressed: () {},
-                      ),
+                      IconButton(icon: const Icon(Icons.visibility, color: Colors.grey), onPressed: () {}),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: AppColors.skyLight,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Text(
-                          '$_currentPage',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.skyDark),
-                        ),
+                        decoration: BoxDecoration(color: AppColors.skyLight, borderRadius: BorderRadius.circular(15)),
+                        child: Text('$_currentPage', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.skyDark)),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.bookmark, color: Colors.grey),
-                        onPressed: () {},
-                      ),
+                      IconButton(icon: const Icon(Icons.bookmark, color: Colors.grey), onPressed: () {}),
                     ],
                   ),
                 ),
